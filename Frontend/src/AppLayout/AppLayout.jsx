@@ -6,7 +6,6 @@ import Dashboard from '../pages/User/Dashboard/Dashboard';
 import VerticalFRS from '../pages/User/VerticalFRS/VerticalFRS';
 import FRSHistory from '../pages/User/FRSHistory/FRSHistory';
 import HeadDashboard from '../pages/Head/HeadDashboard/Head';
-import FacultyList from '../pages/Head/FacultyList/FacultyList';
 import FRSEntry from '../pages/Head/FRSEntry/FRSEntry';
 import Admin from '../pages/Admin/AdminDashboard/Admin';
 import VerticalwiseFRS from '../pages/Admin/FRSVertical/FRSVertical';
@@ -14,6 +13,7 @@ import DepartmentwiseFRS from '../pages/Admin/FRSDepartment/FRSDepartment';
 import Leaderboard from '../pages/Admin/Leaderboard/Leaderboard';
 import LoginPage from '../components/LoginPage/LoginPage'; // Adjust the import path as needed
 import FacultyFRS from '../pages/Admin/FacultyList/FacultyFRS';
+import EventEntry from '../pages/Head/EventEntry/EventEntry';
 
 const AppLayout = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -47,7 +47,7 @@ const AppLayout = () => {
                 <Route path="/vertical-frs" element={<VerticalFRS />} />
                 <Route path="/frs-history" element={<FRSHistory />} />
                 <Route path="/head-dashboard" element={<HeadDashboard />} />
-                <Route path="/faculty-list" element={<FacultyList />} />
+                <Route path="/event-entry" element={<EventEntry />} />
                 <Route path="/frs-entry" element={<FRSEntry />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/verticalwise-frs" element={<VerticalwiseFRS />} />

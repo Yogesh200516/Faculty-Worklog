@@ -1,0 +1,30 @@
+.head-top {
+  background-color: pink;
+  border-radius: 5px;
+  height: 200px;
+  margin-bottom: 30px;
+}
+
+.head-middle {
+  background-color: pink;
+  border-radius: 5px;
+  height: 410px;
+  margin-bottom: 30px;
+}
+
+.head-bottom {
+    background-color: pink;
+    border-radius: 5px;
+    margin-bottom: 50px;
+    height: 250px;
+}
+
+.head-text1, .head-text2, .head-text3 {
+  color: #616161;
+  font-weight: bold;
+  align-self: flex-start;
+  text-align: left;
+  margin-left: 10px;
+  font-size: 18px;
+  margin-bottom: 10px;
+}

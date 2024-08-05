@@ -20,15 +20,9 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import VerticalFrsIcon from '@mui/icons-material/VerticalSplit';
 import FrsHistoryIcon from '@mui/icons-material/History';
-import HeadDashboardIcon from '@mui/icons-material/AccountTree';
 import FacultyListIcon from '@mui/icons-material/People';
 import FrsEntryIcon from '@mui/icons-material/Edit';
-import AdminIcon from '@mui/icons-material/SupervisorAccount';
-import VerticalwiseFrsIcon from '@mui/icons-material/VerticalAlignBottom';
-import DepartmentwiseFrsIcon from '@mui/icons-material/FormatListBulleted';
-import LeaderboardIcon from '@mui/icons-material/Equalizer';
 import FacultyEntryIcon from '@mui/icons-material/PersonAdd';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
@@ -40,7 +34,6 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import Tooltip from '@mui/material/Tooltip';
 import Popover from '@mui/material/Popover';
 import logo from '../../assets/images/logo1.png';
-import AppLayout from '../../AppLayout/AppLayout';
 import Notification from './Notification'; // Import Notification component
 
 const drawerWidth = 240;
@@ -116,7 +109,7 @@ const userMenuItems = [
 
 const verticalHeadMenuItems = [
   { text: 'Dashboard', icon: <DashboardIcon />, link: '/head-dashboard' },
-  { text: 'Event Entry', icon: <FacultyEntryIcon />, link: '/faculty-list' },
+  // { text: 'Event Entry', icon: <FacultyEntryIcon />, link: '/event-entry' },
   { text: 'FRS Update', icon: <FrsEntryIcon />, link: '/frs-entry' },
 ];
 
@@ -131,7 +124,7 @@ const adminMenuItems = [
 export default function Navbar() {
   const theme = useTheme();
   const [open, setOpen] = useState(true);
-  const [userRole, setUserRole] = useState('admin'); // 'user', 'vertical_head', 'admin'
+  const [userRole, setUserRole] = useState('user'); // 'user', 'vertical_head', 'admin'
   const [anchorEl, setAnchorEl] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
   const [notificationAnchorEl, setNotificationAnchorEl] = useState(null); // State for notification popover anchor element

@@ -24,7 +24,10 @@ function Notification() {
 
     return (
         <div className="notification-container">
-            {tasks.length > 0 ? (
+            <div className="notification">
+                All FRS pdates from each vertical will be notified and further details will be circulated through Mail from the corresponding verticals.
+            </div>
+            {/* {tasks.length > 0 ? (
                 <div className="task-details">
                     {tasks.length > 1 && <FaArrowLeft onClick={handlePreviousTask} className="arrow-icon" />}
                     <div className="task-content">
@@ -38,7 +41,7 @@ function Notification() {
                 <div className="no-tasks">
                     <p>You have no tasks currently</p>
                 </div>
-            )}
+            )} */}
         </div>
     );
 }

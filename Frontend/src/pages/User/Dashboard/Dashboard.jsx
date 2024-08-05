@@ -29,7 +29,7 @@ function Dashboard() {
           <FRSSummary />
         </div>
         <div className="right-grid">
-          <div className="text3">Tasks and Events</div>
+          <div className="text3">Notification</div>
           <Notification />
         </div>
       </div>

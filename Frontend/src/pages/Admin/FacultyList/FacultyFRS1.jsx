@@ -1,11 +1,12 @@
-// import * as React from 'react';
-// import { useState, useEffect } from 'react';
+// import React, { useState, useEffect } from 'react';
 // import { DataGrid } from '@mui/x-data-grid';
 // import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 // import { useNavigate } from 'react-router-dom';
-// import './FacultyFRS.css';
+// import { TextField, InputAdornment } from '@mui/material';
+// import SearchIcon from '@mui/icons-material/Search';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faHistory } from '@fortawesome/free-solid-svg-icons';
+// import './FacultyFRS.css';
 
 // // Custom hook for window size
 // function useWindowSize() {
@@ -33,6 +34,8 @@
 // const FacultyFRS = () => {
 //   const { width } = useWindowSize();
 //   const navigate = useNavigate();
+//   const [searchText, setSearchText] = useState('');
+//   const [filteredRows, setFilteredRows] = useState([]);
 
 //   const getColumnWidth = () => {
 //     if (width < 1024) {
@@ -67,29 +70,79 @@
 //   const rows = [
 //     { id: 1, facultyId: '2024F001', facultyName: 'Harish Kumar', department: 'Computer Science and Engineering', designation: 'Assistant Professor Level-3', frsScore: 123 },
 //     { id: 2, facultyId: '2024F002', facultyName: 'Vasanth Kumar', department: 'Information Technology', designation: 'Assistant Professor Level-2', frsScore: -456 },
+//     { id: 3, facultyId: '2024F003', facultyName: 'John Doe', department: 'Computer Science and Engineering', designation: 'Assistant Professor Level-1', frsScore: 78 },
+//     { id: 4, facultyId: '2024F004', facultyName: 'Jane Smith', department: 'Information Technology', designation: 'Assistant Professor Level-2', frsScore: -32 },
+//     { id: 5, facultyId: '2024F005', facultyName: 'Michael Brown', department: 'Mechanical Engineering', designation: 'Associate Professor', frsScore: 45 },
 //     // ... (rest of the rows)
 //   ];
+
+//   useEffect(() => {
+//     const lowercasedFilter = searchText.toLowerCase();
+//     const filteredData = rows.filter(item => {
+//       return Object.keys(item).some(key =>
+//         item[key].toString().toLowerCase().includes(lowercasedFilter)
+//       );
+//     });
+//     setFilteredRows(filteredData);
+//   }, [searchText, rows]);
 
 //   const handleBackClick = () => {
 //     navigate('/admin');
 //   };
 
 //   return (
-//     <div className="grid-full2">
-//       <div className='frs-heading'>
-//         <FontAwesomeIcon icon={faHistory} className="history-icon" />
-//         Faculty FRS Score
+//     <div className="grid-full3">
+//       <div className="header-container">
+//         <div className='frs-heading'>
+//           <FontAwesomeIcon icon={faHistory} className="history-icon" />
+//           Faculty FRS Score
+//         </div>
+//         <TextField
+//           variant="outlined"
+//           placeholder="Search..."
+//           value={searchText}
+//           onChange={(e) => setSearchText(e.target.value)}
+//           InputProps={{
+//             startAdornment: (
+//               <InputAdornment position="start">
+//                 <SearchIcon sx={{color: '#bdbdbd'}}/>
+//               </InputAdornment>
+//             ),
+//           }}
+//           className="search-bar2"
+//           sx={{
+//             width: '300px',
+//             '& .MuiOutlinedInput-root': {
+//               height: '40px',
+//               '& fieldset': {
+//                 borderColor: '#bdbdbd',
+//               },
+//               '&:hover fieldset': {
+//                 borderColor: '#1565c0',
+//               },
+//               '&.Mui-focused fieldset': {
+//                 borderColor: '#0d47a1',
+//               },
+//             },
+//             '& .MuiInputAdornment-root': {
+//               color: '#1e88e5',
+//             },
+//             '& .MuiOutlinedInput-input': {
+//               padding: '8px 14px',
+//             },
+//           }}
+//         />
 //       </div>
 //       <div className='data-grid-container'>
 //         <DataGrid
-//           rows={rows}
+//           rows={filteredRows}
 //           columns={columns}
 //           initialState={{
 //             pagination: {
-//               paginationModel: { page: 0, pageSize: 5 },
+//               paginationModel: { page: 0, pageSize: 20 },
 //             },
 //           }}
-//           pageSizeOptions={[5, 10, 20]}
+//           pageSizeOptions={[5, 10, 20, 50]}
 //           checkboxSelection
 //           sx={{
 //             '& .MuiDataGrid-columnHeaderTitle': {
@@ -99,6 +152,27 @@
 //             },
 //             '& .MuiDataGrid-columnHeaders': {
 //               backgroundColor: '#1e88e5',
+//             },
+//             '& .MuiDataGrid-footerContainer': {
+//               display: 'flex',
+//               justifyContent: 'space-between',
+//               flexWrap: 'wrap',
+//             },
+//             '& .MuiTablePagination-root': {
+//               display: 'flex',
+//               justifyContent: 'center',
+//               flexWrap: 'wrap',
+//             },
+//             '& .MuiTablePagination-toolbar': {
+//               justifyContent: 'center',
+//               flexWrap: 'wrap',
+//             },
+//             '& .MuiTablePagination-selectLabel': {
+//               display: 'inline-block',
+//               marginRight: '8px',
+//             },
+//             '& .MuiTablePagination-input': {
+//               marginLeft: '8px',
 //             },
 //           }}
 //         />
