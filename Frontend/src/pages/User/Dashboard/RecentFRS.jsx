@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './RecentFRS.css';
 
-function RecentFRS() {
+function RecentFRS(handlePopupClick) {
   const data = [
     { date: '12-06-2024', verticalName: 'Skill', reason: 'Late Submission', reason_info: 'The given task was not completed on time and it will be considered as late submission', frsUpdate: 50 },
     { date: '13-06-2024', verticalName: 'Academics', reason: 'Insufficient Data', reason_info: 'The Qusetion Paper taken by you is not having sufficient data in some questions', frsUpdate: -100 },

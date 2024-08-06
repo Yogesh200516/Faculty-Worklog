@@ -109,7 +109,7 @@ const userMenuItems = [
 
 const verticalHeadMenuItems = [
   { text: 'Dashboard', icon: <DashboardIcon />, link: '/head-dashboard' },
-  // { text: 'Event Entry', icon: <FacultyEntryIcon />, link: '/event-entry' },
+  { text: 'FRS History', icon: <FrsHistoryIcon />, link: '/vertical-history' },
   { text: 'FRS Update', icon: <FrsEntryIcon />, link: '/frs-entry' },
 ];
 
@@ -124,7 +124,7 @@ const adminMenuItems = [
 export default function Navbar() {
   const theme = useTheme();
   const [open, setOpen] = useState(true);
-  const [userRole, setUserRole] = useState('user'); // 'user', 'vertical_head', 'admin'
+  const [userRole, setUserRole] = useState('vertical_head'); // 'user', 'vertical_head', 'admin'
   const [anchorEl, setAnchorEl] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
   const [notificationAnchorEl, setNotificationAnchorEl] = useState(null); // State for notification popover anchor element

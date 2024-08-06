@@ -13,15 +13,18 @@ import DepartmentwiseFRS from '../pages/Admin/FRSDepartment/FRSDepartment';
 import Leaderboard from '../pages/Admin/Leaderboard/Leaderboard';
 import LoginPage from '../components/LoginPage/LoginPage'; // Adjust the import path as needed
 import FacultyFRS from '../pages/Admin/FacultyList/FacultyFRS';
-import EventEntry from '../pages/Head/EventEntry/EventEntry';
+import VerticalHistory from '../pages/Head/VerticalFRSHistory/VerticalHistory';
 
 const AppLayout = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+ // const [isOpen, setIsOpen] = useState(false);
 
   const handleLogin = () => {
     // Implement the actual authentication logic here
     setIsAuthenticated(true);
   };
+
+
 
   return (
     <Router>
@@ -47,7 +50,7 @@ const AppLayout = () => {
                 <Route path="/vertical-frs" element={<VerticalFRS />} />
                 <Route path="/frs-history" element={<FRSHistory />} />
                 <Route path="/head-dashboard" element={<HeadDashboard />} />
-                <Route path="/event-entry" element={<EventEntry />} />
+                <Route path="/vertical-history" element={<VerticalHistory />} />
                 <Route path="/frs-entry" element={<FRSEntry />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/verticalwise-frs" element={<VerticalwiseFRS />} />

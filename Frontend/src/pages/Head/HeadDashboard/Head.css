@@ -1,14 +1,43 @@
 .head-top {
-  background-color: pink;
+  display: flex;
   border-radius: 5px;
   height: 200px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+.top-left {
+  border-radius: 5px;
+  width: 100%;
+  background-color: pink;
+}
+
+.top-left-content {
+  display: flex;
+  gap: 10px;
+}
+
+.frs-positive1 {
+  background-color: white;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.frs-negative1 {
+  background-color: white;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.top-right {
+  background-color: pink;
+  border-radius: 5px;
+  width: 100%;
 }
 
 .head-middle {
-  background-color: pink;
   border-radius: 5px;
-  height: 410px;
+  height: auto;
   margin-bottom: 30px;
 }
 
@@ -24,7 +53,7 @@
   font-weight: bold;
   align-self: flex-start;
   text-align: left;
-  margin-left: 10px;
+  margin-left: 0px;
   font-size: 18px;
   margin-bottom: 10px;
 }

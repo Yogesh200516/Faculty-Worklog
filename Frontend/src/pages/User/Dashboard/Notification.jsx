@@ -25,7 +25,7 @@ function Notification() {
     return (
         <div className="notification-container">
             <div className="notification">
-                All FRS pdates from each vertical will be notified and further details will be circulated through Mail from the corresponding verticals.
+                All FRS updates from each vertical will be notified and further details will be circulated through Mail from the corresponding verticals.
             </div>
             {/* {tasks.length > 0 ? (
                 <div className="task-details">
