@@ -35,7 +35,7 @@ export default function MonthBarChart() {
 
   const getChartDimensions = () => {
     if (width > 1024) {
-      return { width: 1000, height: 400 };
+      return { width: 1000, height: 420 };
     } else if (width <= 1024 && width > 900) {
       return { width: 980, height: 400 };
     } else if (width <= 900 && width > 768) {

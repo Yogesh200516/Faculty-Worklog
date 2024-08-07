@@ -39,7 +39,7 @@ const FacultyFRS = () => {
 
   const getColumnWidth = () => {
     if (width < 1024) {
-      return { id: 50, facultyId: 140, facultyName: 180, department: 180, designation: 190, frsScore: 100 };
+      return { id: 90, facultyId: 140, facultyName: 180, department: 180, designation: 190, frsScore: 100 };
     } else {
       return { id: 70, facultyId: 160, facultyName: 180, department: 250, designation: 210, frsScore: 160 };
     }
@@ -48,7 +48,7 @@ const FacultyFRS = () => {
   const columnWidths = getColumnWidth();
 
   const columns = [
-    { field: 'id', headerName: 'ID', width: columnWidths.id },
+    { field: 'id', headerName: 'ID', headerAlign: 'center', align: 'center', width: columnWidths.id },
     { field: 'facultyId', headerName: 'Faculty ID', width: columnWidths.facultyId },
     { field: 'facultyName', headerName: 'Faculty Name', width: columnWidths.facultyName },
     { field: 'department', headerName: 'Department', width: columnWidths.department },
@@ -143,7 +143,7 @@ const FacultyFRS = () => {
             },
           }}
           pageSizeOptions={[5, 10, 20, 50]}
-          checkboxSelection
+          // checkboxSelection
           sx={{
             '& .MuiDataGrid-columnHeaderTitle': {
               fontWeight: 'bold',

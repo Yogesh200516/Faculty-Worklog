@@ -1,200 +1,222 @@
-import React, { useState, useEffect } from 'react';
-import { Box, TextField, Autocomplete } from '@mui/material';
+// FRSEntry.js
+import React, { useState } from 'react';
+import { Tabs, Tab, TextField, Button, Box, Grid, Paper } from '@mui/material';
+import formImage from '../../../assets/images/development.png';
+import FacultyPopup from './FacultyPopup';
 import './FRSEntry.css';
-import PropTypes from 'prop-types';
 
-const verticalDisplayNames = {
-  vertical_academics: 'Academics',
-  vertical_coe: 'COE',
-  vertical_iqac: 'IQAC',
-  vertical_skillteam: 'Skill Team',
-  vertical_speciallab: 'Special Lab',
-};
+const TextFields = ({ formData, handleChange, handlePopupOpen, showPopup }) => (
+  <>
+    <TextField
+      fullWidth
+      label="Faculty Name"
+      name="facultyName"
+      value={formData.facultyName}
+      onChange={handleChange}
+      onClick={showPopup ? handlePopupOpen : null}
+      variant="outlined"
+      margin="normal"
+    />
+    <TextField
+      fullWidth
+      label="Faculty ID"
+      name="facultyID"
+      value={formData.facultyID}
+      onChange={handleChange}
+      onClick={showPopup ? handlePopupOpen : null}
+      variant="outlined"
+      margin="normal"
+    />
+    <TextField
+      fullWidth
+      label="FRS"
+      name="frs"
+      value={formData.frs}
+      onChange={handleChange}
+      variant="outlined"
+      margin="normal"
+    />
+    <TextField
+      fullWidth
+      label="Reason Title"
+      name="reasonTitle"
+      value={formData.reasonTitle}
+      onChange={handleChange}
+      variant="outlined"
+      margin="normal"
+    />
+    <TextField
+      fullWidth
+      label="Reason"
+      name="reason"
+      value={formData.reason}
+      onChange={handleChange}
+      variant="outlined"
+      margin="normal"
+      multiline
+      rows={2}
+    />
+  </>
+);
 
-const FRSEntry = ({ user }) => {
-  const [frsUpdateValue, setFrsUpdateValue] = useState('');
-  const [inputValue, setInputValue] = useState('');
-
+const FRSEntry = () => {
+  const [tabValue, setTabValue] = useState(0);
   const [formData, setFormData] = useState({
-    name: '',
-    id: '',
-    email: '',
-    frs_update: '',
+    facultyName: '',
+    facultyID: '',
+    frs: '',
+    reasonTitle: '',
     reason: '',
-    reason_info: '',
-    vertical: ''
   });
+  const [popupOpen, setPopupOpen] = useState(false);
+  const [selectedFaculty, setSelectedFaculty] = useState([]);
 
-  const options = ['50', '100', '200', '1000'];
+  const facultyList = [
+    { id: '1', name: 'John Doe', department: 'Computer Science' },
+    { id: '2', name: 'Jane Smith', department: 'Mathematics' },
+    { id: '3', name: 'Michael Johnson', department: 'Physics' },
+    { id: '4', name: 'John Doe', department: 'Computer Science' },
+    { id: '5', name: 'Jane Smith', department: 'Mathematics' },
+    { id: '6', name: 'Michael Johnson', department: 'Physics' },
+    { id: '7', name: 'John Doe', department: 'Computer Science' },
+    { id: '8', name: 'Jane Smith', department: 'Mathematics' },
+    { id: '9', name: 'Michael Johnson', department: 'Physics' },
+    { id: '10', name: 'John Doe', department: 'Computer Science' },
+    { id: '11', name: 'Jane Smith', department: 'Mathematics' },
+    { id: '12', name: 'Michael Johnson', department: 'Physics' },
+  ];
 
-  const handleInputChange = (event, newInputValue) => {
-    if (/^-?\d*$/.test(newInputValue)) {
-      setInputValue(newInputValue);
-      setFrsUpdateValue(newInputValue);
-      setFormData({ ...formData, frs_update: newInputValue });
-    }
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
   };
 
-  const getVerticalName = () => {
-    if (!user || !user.verticals) {
-      return '';
-    }
-
-    const verticals = user.verticals;
-    for (const key in verticals) {
-      if (verticals[key] === 1) {
-        return verticalDisplayNames[key] || key;
-      }
-    }
-    return '';
+  const handleClear = () => {
+    setFormData({
+      facultyName: '',
+      facultyID: '',
+      frs: '',
+      reasonTitle: '',
+      reason: '',
+    });
+    setSelectedFaculty([]);
   };
-
-  useEffect(() => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      vertical: getVerticalName()
-    }));
-  }, [user]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log('Form Data:', formData);
+    // Update FRS for all selected faculties
+    selectedFaculty.forEach(id => {
+      console.log(`Updating FRS for Faculty ID: ${id}`);
+      // Add API call or logic here to update the FRS for each selected faculty
+    });
   };
 
-  const handleFieldChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevData => ({
-      ...prevData,
-      [name]: value
-    }));
+  const handlePopupOpen = () => {
+    setPopupOpen(true);
+  };
+
+  const handlePopupClose = () => {
+    setPopupOpen(false);
+  };
+
+  const handleFacultyChange = (newSelectedFaculty) => {
+    setSelectedFaculty(newSelectedFaculty);
+  };
+
+  const handlePopupSubmit = () => {
+    const selectedFaculties = facultyList.filter(faculty => selectedFaculty.includes(faculty.id));
+    const facultyNames = selectedFaculties.map(faculty => faculty.name).join(', ');
+    const facultyIDs = selectedFaculties.map(faculty => faculty.id).join(', ');
+
+    setFormData({
+      ...formData,
+      facultyName: facultyNames,
+      facultyID: facultyIDs,
+    });
+
+    handlePopupClose();
   };
 
   return (
-    <div>
-      <div>
-        <h1>FRS Entry</h1>
-      </div>
-      <Box
-        component="form"
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: 2,
-          maxWidth: '800px',
-          marginTop: '40px',
-          padding: 2,
-          backgroundColor: '#e1e8ee',
-          borderRadius: '8px',
-          border: '1px solid #1e90ff',
-        }}
-        noValidate
-        autoComplete="off"
-        onSubmit={handleSubmit}
-      >
-        <div className="faculty-info">
-          <p style={{ color: '#083983', fontSize: '16px', fontWeight: 'bold' }}>Faculty Info</p>
-          <TextField
-            required
-            id="name"
-            name="name"
-            label="Name"
-            placeholder="Name"
-            variant="outlined"
-            value={formData.name}
-            onChange={handleFieldChange}
-          />
-          <TextField
-            required
-            id="id"
-            name="id"
-            label="Faculty ID"
-            placeholder="FACULTY ID"
-            variant="outlined"
-            value={formData.id}
-            onChange={handleFieldChange}
-          />
-          <TextField
-            required
-            id="email"
-            name="email"
-            label="Email"
-            placeholder="EMAIL"
-            variant="outlined"
-            value={formData.email}
-            onChange={handleFieldChange}
-          />
-        </div>
-        
-        <div className="faculty-update">
-          <p style={{ color: '#083983', fontSize: '16px', fontWeight: 'bold' }}>FRS Update</p>
-          <Autocomplete
-            freeSolo
-            value={frsUpdateValue}
-            onChange={(event, newValue) => {
-              setFrsUpdateValue(newValue || '');
-              setFormData({ ...formData, frs_update: newValue || '' });
-            }}
-            inputValue={inputValue}
-            onInputChange={handleInputChange}
-            options={options}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                id="frs_update"
-                name="frs_update"
-                label="FRS Update"
-                placeholder="FRS Update"
-                variant="outlined"
-                value={formData.frs_update}
-                inputProps={{
-                  ...params.inputProps,
-                  pattern: "^-?\\d*$",
-                  type: 'text'
-                }}
-              />
-            )}
-          />
-          <TextField
-            required
-            id="reason"
-            name="reason"
-            label="Reason"
-            placeholder="Reason"
-            variant="outlined"
-            value={formData.reason}
-            onChange={handleFieldChange}
-          />
-          <TextField
-            required
-            id="reason_info"
-            name="reason_info"
-            label="Reason Info"
-            placeholder="Reason Info"
-            variant="outlined"
-            value={formData.reason_info}
-            onChange={handleFieldChange}
-          />
-          <div className='filling' style={{ gridColumn: 'span 2' }}>
-            <button className='submit' type="submit">Submit</button>
-            <button className='Cancel' type="reset">Cancel</button>
-          </div>
-        </div>
-        <div className="vertical-info">
-          <p style={{ color: '#083983', fontSize: '16px', fontWeight: 'bold' }}>
-            Vertical: {formData.vertical}
-          </p>
-        </div>
-      </Box>
-    </div>
+    <Box className="frs-entry-container">
+      <Paper elevation={3} className="frs-entry-paper">
+        <div className='form-head'>FRS Update</div>
+        <Tabs value={tabValue} onChange={(e, newValue) => setTabValue(newValue)}>
+          <Tab label="Individual" sx={{ fontWeight: 'bold' }} />
+          <Tab label="Bulk" sx={{ fontWeight: 'bold' }} />
+        </Tabs>
+        {tabValue === 0 && (
+          <Box component="form" onSubmit={handleSubmit} noValidate autoComplete="off">
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <TextFields formData={formData} handleChange={handleChange} handlePopupOpen={handlePopupOpen} showPopup={false} />
+                <Box mt={2} className="button-container">
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleClear}
+                    className="clear-button"
+                  >
+                    Clear
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    className="submit-button"
+                  >
+                    Submit
+                  </Button>
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={5} container justifyContent="center" alignItems="center">
+                <img src={formImage} alt="FRS Illustration" className="frs-illustration" />
+              </Grid>
+            </Grid>
+          </Box>
+        )}
+        {tabValue === 1 && (
+          <Box component="form" onSubmit={handleSubmit} noValidate autoComplete="off">
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <TextFields formData={formData} handleChange={handleChange} handlePopupOpen={handlePopupOpen} showPopup={true} />
+                <Box mt={2} className="button-container">
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleClear}
+                    className="clear-button"
+                  >
+                    Clear
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    className="submit-button"
+                  >
+                    Submit
+                  </Button>
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={5} container justifyContent="center" alignItems="center">
+                <img src={formImage} alt="FRS Illustration" className="frs-illustration" />
+              </Grid>
+            </Grid>
+          </Box>
+        )}
+      </Paper>
+      <FacultyPopup
+        open={popupOpen}
+        onClose={handlePopupClose}
+        facultyList={facultyList}
+        selectedFaculty={selectedFaculty}
+        handleFacultyChange={handleFacultyChange}
+        handlePopupSubmit={handlePopupSubmit}
+      />
+    </Box>
   );
-};
-
-FRSEntry.propTypes = {
-  user: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    role: PropTypes.string.isRequired,
-    verticals: PropTypes.objectOf(PropTypes.number).isRequired,
-  }).isRequired,
 };
 
 export default FRSEntry;

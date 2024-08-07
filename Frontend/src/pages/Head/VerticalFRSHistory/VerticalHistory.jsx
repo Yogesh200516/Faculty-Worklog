@@ -31,7 +31,7 @@ function useWindowSize() {
   return windowSize;
 }
 
-const VerticalHistory = () => {
+const FacultyFRS = () => {
   const { width } = useWindowSize();
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState('');
@@ -39,31 +39,51 @@ const VerticalHistory = () => {
 
   const getColumnWidth = () => {
     if (width < 1024) {
-      return { sno: 50, date: 140, facultyId: 140, facultyName: 180, reason: 250, frsScore: 100 };
+      return { sno: 50, date: 140, facultyName: 180, facultyId: 140, reason: 250, frsScore: 100 };
     } else {
-      return { sno: 70, date: 160, facultyId: 160, facultyName: 180, reason: 350, frsScore: 160 };
+      return { sno: 70, date: 160, facultyName: 180, facultyId: 160, reason: 300, frsScore: 160 };
     }
   };
 
   const columnWidths = getColumnWidth();
 
   const columns = [
-    { field: 'sno', headerName: 'S.No', width: columnWidths.sno },
+    { 
+      field: 'sno', 
+      headerName: 'S.No', 
+      width: columnWidths.sno, 
+      headerAlign: 'center', 
+      align: 'center',
+      renderCell: (params) => (
+        <strong>{params.value}</strong>
+      ),
+    },
     { 
       field: 'date', 
       headerName: 'Date', 
       width: columnWidths.date, 
-      type: 'date', 
-      valueGetter: (params) => new Date(params.value),
     },
-    { field: 'facultyId', headerName: 'Faculty ID', width: columnWidths.facultyId },
-    { field: 'facultyName', headerName: 'Faculty Name', width: columnWidths.facultyName },
-    { field: 'reason', headerName: 'Reason', width: columnWidths.reason },
+    { 
+      field: 'facultyName', 
+      headerName: 'Faculty Name', 
+      width: columnWidths.facultyName,
+    },
+    { 
+      field: 'facultyId', 
+      headerName: 'Faculty ID', 
+      width: columnWidths.facultyId,
+    },
+    { 
+      field: 'reason', 
+      headerName: 'Reason', 
+      width: columnWidths.reason,
+    },
     {
       field: 'frsScore',
       headerName: 'FRS Score',
       type: 'number',
       width: columnWidths.frsScore,
+      headerAlign: 'center',
       align: 'center',
       renderCell: (params) => (
         <div className={params.value > 0 ? 'frs-positive' : 'frs-negative'}>
@@ -74,11 +94,11 @@ const VerticalHistory = () => {
   ];
 
   const rows = [
-    { id: 1, sno: 1, date: '2023-08-01', facultyId: '2024F001', facultyName: 'Harish Kumar', reason: 'Completed Project A', frsScore: 123 },
-    { id: 2, sno: 2, date: '2023-09-15', facultyId: '2024F002', facultyName: 'Vasanth Kumar', reason: 'Missed Deadline B', frsScore: -456 },
-    { id: 3, sno: 3, date: '2023-10-20', facultyId: '2024F003', facultyName: 'John Doe', reason: 'Published Paper C', frsScore: 78 },
-    { id: 4, sno: 4, date: '2023-11-05', facultyId: '2024F004', facultyName: 'Jane Smith', reason: 'Did not attend Conference D', frsScore: -32 },
-    { id: 5, sno: 5, date: '2023-12-10', facultyId: '2024F005', facultyName: 'Michael Brown', reason: 'Organized Workshop E', frsScore: 45 },
+    { id: 1, sno: 1, date: '2024-07-16', facultyId: '2024F001', facultyName: 'Harish Kumar', reason: 'Completed Project A', frsScore: 123 },
+    { id: 2, sno: 2, date: '2024-07-16', facultyId: '2024F002', facultyName: 'Vasanth Kumar', reason: 'Missed Deadline B', frsScore: -456 },
+    { id: 3, sno: 3, date: '2024-07-16', facultyId: '2024F003', facultyName: 'John Doe', reason: 'Published Paper C', frsScore: 78 },
+    { id: 4, sno: 4, date: '2024-07-16', facultyId: '2024F004', facultyName: 'Jane Smith', reason: 'Did not attend Conference D', frsScore: -32 },
+    { id: 5, sno: 5, date: '2024-07-16', facultyId: '2024F005', facultyName: 'Michael Brown', reason: 'Organized Workshop E', frsScore: 45 },
     // ... (rest of the rows)
   ];
 
@@ -190,4 +210,4 @@ const VerticalHistory = () => {
   );
 };
 
-export default VerticalHistory;
+export default FacultyFRS;
