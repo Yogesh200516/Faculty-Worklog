@@ -1,11 +1,17 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+=======
+// FacultyPopup.js
+import React, { useState } from 'react';
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
 import {
   Dialog, DialogTitle, DialogContent, DialogActions, Button,
   TextField, Checkbox, Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Paper, Box, Typography, MenuItem, Select, InputLabel, FormControl
 } from '@mui/material';
 
+<<<<<<< HEAD
 const FacultyPopup = ({ open, onClose, selectedFaculty, handleFacultyChange, handlePopupSubmit }) => {
   const [facultyList, setFacultyList] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -73,6 +79,16 @@ const FacultyPopup = ({ open, onClose, selectedFaculty, handleFacultyChange, han
 
   const handleSelectAll = (event) => {
     const isSelected = event.target.checked;
+=======
+const FacultyPopup = ({ open, onClose, facultyList, selectedFaculty, handleFacultyChange, handlePopupSubmit }) => {
+  const [selectAll, setSelectAll] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [departmentFilter, setDepartmentFilter] = useState('');
+
+  const handleSelectAll = (event) => {
+    const isSelected = event.target.checked;
+    setSelectAll(isSelected);
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
     if (isSelected) {
       const allFacultyIds = filteredFacultyList.map(faculty => faculty.id);
       handleFacultyChange(allFacultyIds);
@@ -102,6 +118,11 @@ const FacultyPopup = ({ open, onClose, selectedFaculty, handleFacultyChange, han
     (departmentFilter ? faculty.department === departmentFilter : true)
   );
 
+<<<<<<< HEAD
+=======
+  const departments = [...new Set(facultyList.map(faculty => faculty.department))];
+
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
       <DialogTitle sx={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#01579b', textAlign: 'center' }}>
@@ -172,11 +193,15 @@ const FacultyPopup = ({ open, onClose, selectedFaculty, handleFacultyChange, han
         </Box>
       </DialogContent>
       <DialogActions>
+<<<<<<< HEAD
         <Button
           onClick={() => handlePopupSubmit(selectedFaculty)}
           color="primary"
           variant="contained"
         >
+=======
+        <Button onClick={handlePopupSubmit} color="primary" variant="contained">
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
           Submit
         </Button>
         <Button onClick={onClose} color="secondary">
@@ -187,6 +212,7 @@ const FacultyPopup = ({ open, onClose, selectedFaculty, handleFacultyChange, han
   );
 };
 
+<<<<<<< HEAD
 FacultyPopup.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
@@ -195,4 +221,6 @@ FacultyPopup.propTypes = {
   handlePopupSubmit: PropTypes.func.isRequired,
 };
 
+=======
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
 export default FacultyPopup;

@@ -3,11 +3,13 @@ body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
+  z-index: -1;
 }
 
 /* MiniDrawer styles */
 .Navbar {
   display: flex;
+  z-index: -1;
 }
 
 .MuiDrawer-root {
@@ -27,7 +29,6 @@ body {
 
 .MuiAppBar-root {
   transition: width 0.3s ease;
-  z-index: 900;
 }
 
 .MuiAppBar-shift {

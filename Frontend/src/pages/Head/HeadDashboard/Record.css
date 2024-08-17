@@ -39,7 +39,10 @@
     border-radius: 5px;
     flex: 1;
     margin: 0 10px;
+<<<<<<< HEAD
     border: 1px solid #e0e0e0;
+=======
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
 }
 
 .update-icon {
@@ -106,7 +109,10 @@
     .update-details {
         display: grid;
         width: 100%;
+<<<<<<< HEAD
         gap: 10px;
+=======
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
     }
     .update-item {
         height: 150px;

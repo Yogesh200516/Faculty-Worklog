@@ -21,10 +21,17 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import FrsHistoryIcon from '@mui/icons-material/History';
+<<<<<<< HEAD
 import FacultyEntryIcon from '@mui/icons-material/PersonAdd';
 import FacultyListIcon from '@mui/icons-material/People';
 import FrsEntryIcon from '@mui/icons-material/Edit';
 import AdminIcon from '@mui/icons-material/SupervisorAccount';
+=======
+import FacultyListIcon from '@mui/icons-material/People';
+import FrsEntryIcon from '@mui/icons-material/Edit';
+import FacultyEntryIcon from '@mui/icons-material/PersonAdd';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -128,7 +135,11 @@ const hrMenuItems =[
 export default function Navbar({ jwtToken ,onLogout}) {
   const theme = useTheme();
   const [open, setOpen] = useState(true);
+<<<<<<< HEAD
   const [userRole, setUserRole] = useState('');
+=======
+  const [userRole, setUserRole] = useState('vertical_head'); // 'user', 'vertical_head', 'admin'
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
   const [anchorEl, setAnchorEl] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
   const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);

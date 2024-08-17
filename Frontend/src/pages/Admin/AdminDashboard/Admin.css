@@ -75,11 +75,11 @@
   .grid-row {
     display: grid;
   }
-  .leaderboard-frs {
+  /* .leaderboard-frs {
     display: grid;
     height: auto;
     gap: 30px;
-  }
+  } */
   .admin {
     display: grid;
   }

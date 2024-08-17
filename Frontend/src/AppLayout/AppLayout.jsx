@@ -11,17 +11,25 @@ import Admin from '../pages/Admin/AdminDashboard/Admin';
 import VerticalwiseFRS from '../pages/Admin/FRSVertical/FRSVertical';
 import DepartmentwiseFRS from '../pages/Admin/FRSDepartment/FRSDepartment';
 import FacultyFRS from '../pages/Admin/FacultyList/FacultyFRS';
+<<<<<<< HEAD
 import LoginPage from '../components/LoginPage/LoginPage';
 import VerticalGrid from '../pages/User/Dashboard/VerticalGrid';
 import VerticalHistory from '../pages/Head/VerticalFRSHistory/VerticalHistory';
 import FacultyTable from '../pages/Admin/FacultyList/FacultyFRS';
 import FacultyDetails from '../pages/Admin/FacultyDetails/FacultyDetails';
+=======
+import VerticalHistory from '../pages/Head/VerticalFRSHistory/VerticalHistory';
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
 
 const AppLayout = () => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+<<<<<<< HEAD
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+=======
+ // const [isOpen, setIsOpen] = useState(false);
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
 
   const handleLogin = (userData, accessToken, refreshToken) => {
     console.log('Handling login:', userData, accessToken);
@@ -33,6 +41,7 @@ const AppLayout = () => {
     navigate('/'); // Navigate to the default route after login
   };
 
+<<<<<<< HEAD
   const checkAuthStatus = async () => {
     const storedUser = localStorage.getItem('user');
     const accessToken = localStorage.getItem('accessToken');
@@ -125,6 +134,48 @@ const AppLayout = () => {
           <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
+=======
+
+
+  return (
+    <Router>
+      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+        <CssBaseline />
+        {isAuthenticated ? (
+          <>
+            <Navbar />
+            <Box
+              component="main"
+              sx={{
+                flexGrow: 1,
+                p: 3,
+                marginTop: 8, // Adjust the marginTop to match the height of the AppBar
+                backgroundColor: (theme) =>
+                  theme.palette.mode === 'dark' ? '#121212' : '#f4f6f8',
+                transition: 'margin 0.3s',
+              }}
+            >
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/vertical-frs" element={<VerticalFRS />} />
+                <Route path="/frs-history" element={<FRSHistory />} />
+                <Route path="/head-dashboard" element={<HeadDashboard />} />
+                <Route path="/vertical-history" element={<VerticalHistory />} />
+                <Route path="/frs-entry" element={<FRSEntry />} />
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/verticalwise-frs" element={<VerticalwiseFRS />} />
+                <Route path="/departmentwise-frs" element={<DepartmentwiseFRS />} />
+                <Route path="/leaderboard" element={<Leaderboard />} />
+                <Route path="/faculty-entry" element={<FacultyFRS />} />
+                <Route path="*" element={<Navigate to="/" />} />
+              </Routes>
+            </Box>
+          </>
+        ) : (
+          <LoginPage onLogin={handleLogin} />
+        )}
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
       </Box>
     </Box>
   );

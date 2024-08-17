@@ -64,13 +64,21 @@
 
 @media (max-width: 1050px) and (min-width: 768px) {
     .summary-image2 {
+<<<<<<< HEAD
         margin-left: 20px;
+=======
+        margin-left: 10px;
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
         height: 50px;
         width: 50px;
         margin-top: 20px;
     }  
     .summary-title2 {
+<<<<<<< HEAD
         font-size: 18px;
+=======
+        font-size: 16px;
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
         font-weight: bold;
         color: #757575;
     }   
@@ -78,7 +86,11 @@
         display: flex;
         flex-direction: column;
         margin-left: 10px;
+<<<<<<< HEAD
         margin-top: 25px;
+=======
+        margin-top: 30px;
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
     }  
     .summary-value2 {
         font-size: 18px;
@@ -89,27 +101,47 @@
 
 @media (max-width: 600px) {
     .summary-image2 {
+<<<<<<< HEAD
         height: 60px;
         width: 60px;
     }
     .summary-title2 {
         font-size: 22px;
+=======
+        height: 50px;
+        width: 50px;
+    }
+    .summary-title2 {
+        font-size: 16px;
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
     }
 }
 
 @media (max-width: 500px) {
     .summary-image2 {
+<<<<<<< HEAD
         height: 70px;
         width: 70px;
     }
     .summary-title2 {
         font-size: 20px;
+=======
+        height: 50px;
+        width: 50px;
+    }
+    .summary-title2 {
+        font-size: 14px;
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
     }
     .summary-text2 {
         display: flex;
     }
     .summary-value2 {
+<<<<<<< HEAD
         font-size: 20px;
+=======
+        font-size: 18px;
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
     }
 }
 
@@ -120,12 +152,21 @@
     .left-content {
         display: grid;
         gap: 10px;
+<<<<<<< HEAD
         height: 320px;
     }
     .summary-image2 {
         height: 80px;
         width: 80px;
         margin-left: 100px;
+=======
+        height: 280px;
+    }
+    .summary-image2 {
+        height: 70px;
+        width: 70px;
+        margin-left: 70px;
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
     }
     .summary-title2 {
         font-size: 24px;

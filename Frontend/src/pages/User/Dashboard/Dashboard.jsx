@@ -67,7 +67,11 @@ function Dashboard() {
           <button className="view-all-button" onClick={handleViewAllClick}>
             View All Updates
           </button>
+<<<<<<< HEAD
           <RecentFRS user={user} />
+=======
+          <RecentFRS/>
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
           <div className='note3'>Recently updated FRS from all verticals can be seen here</div>
         </div>
       </div>

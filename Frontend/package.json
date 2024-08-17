@@ -17,6 +17,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
+<<<<<<< HEAD
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
     "@mui/styles": "^5.15.19",
@@ -24,15 +25,30 @@
     "@mui/x-charts": "^7.12.1",
     "@mui/x-data-grid": "^7.12.1",
     "@react-oauth/google": "^0.12.1",
+=======
+    "@material-ui/core": "^4.12.4",
+    "@mui/icons-material": "^5.16.6",
+    "@mui/material": "^5.16.6",
+    "@mui/styles": "^5.15.19",
+    "@mui/x-charts": "^7.11.1",
+    "@mui/x-data-grid": "^7.11.1",
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
     "axios": "^1.7.3",
     "chart.js": "^4.4.3",
     "chartjs-adapter-date-fns": "^2.0.0",
     "chartjs-plugin-datalabels": "^2.2.0",
+<<<<<<< HEAD
     "date-fns": "^3.6.0",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
     "install": "^0.13.0",
     "jwt-decode": "^4.0.0",
+=======
+    "html2canvas": "^1.4.1",
+    "install": "^0.13.0",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2",
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
     "npm": "^10.8.2",
     "primeicons": "^7.0.0",
     "primereact": "^10.8.0",

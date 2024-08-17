@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from 'react-router-dom';
+<<<<<<< HEAD
 import { TextField, InputAdornment, Button, MenuItem, Select, FormControl, } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,6 +11,13 @@ import './FacultyFRS.css';
 import { jwtDecode } from 'jwt-decode';
 import { downloadExcel } from './Excel1'; 
 import { fontWeight } from '@mui/system';
+=======
+import { TextField, InputAdornment } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHistory } from '@fortawesome/free-solid-svg-icons';
+import './FacultyFRS.css';
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
 
 function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
@@ -37,6 +45,7 @@ const FacultyFRS = () => {
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState('');
   const [filteredRows, setFilteredRows] = useState([]);
+<<<<<<< HEAD
   const [rows, setRows] = useState([]);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState('');
@@ -79,6 +88,12 @@ const FacultyFRS = () => {
   const getColumnWidth = () => {
     if (width < 1024) {
       return { id: 40, facultyId: 80, facultyName: 110, department: 150, designation: 150, frsScore: 100, semester: 50, academicYear: 100 };
+=======
+
+  const getColumnWidth = () => {
+    if (width < 1024) {
+      return { id: 90, facultyId: 140, facultyName: 180, department: 180, designation: 190, frsScore: 100 };
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
     } else {
       return { id: 60, facultyId: 120, facultyName: 140, department: 200, designation: 200, frsScore: 120, semester: 90, academicYear: 120 };
     }
@@ -87,9 +102,13 @@ const FacultyFRS = () => {
   const columnWidths = getColumnWidth();
 
   const columns = [
+<<<<<<< HEAD
     { field: 'sNo', headerName: 'S.No', align: 'center', fontWeight: 'bold', width: columnWidths.id },
     { field: 'semester', headerName: 'Semester', width: columnWidths.semester },
     { field: 'academicYear', headerName: 'Academic Year', width: columnWidths.academicYear },
+=======
+    { field: 'id', headerName: 'ID', headerAlign: 'center', align: 'center', width: columnWidths.id },
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
     { field: 'facultyId', headerName: 'Faculty ID', width: columnWidths.facultyId },
     { field: 'facultyName', headerName: 'Faculty Name', width: columnWidths.facultyName },
     { field: 'department', headerName: 'Department', width: columnWidths.department },
@@ -112,6 +131,7 @@ const FacultyFRS = () => {
     },
   ];
 
+<<<<<<< HEAD
   const fetchFacultyData = async () => {
     const token = localStorage.getItem('jwt');
 
@@ -206,6 +226,26 @@ const FacultyFRS = () => {
     setFilteredRows(updatedFilteredData);
 }, [searchText, rows, filter]);
 
+=======
+  const rows = [
+    { id: 1, facultyId: '2024F001', facultyName: 'Harish Kumar', department: 'Computer Science and Engineering', designation: 'Assistant Professor Level-3', frsScore: 123 },
+    { id: 2, facultyId: '2024F002', facultyName: 'Vasanth Kumar', department: 'Information Technology', designation: 'Assistant Professor Level-2', frsScore: -456 },
+    { id: 3, facultyId: '2024F003', facultyName: 'John Doe', department: 'Computer Science and Engineering', designation: 'Assistant Professor Level-1', frsScore: 78 },
+    { id: 4, facultyId: '2024F004', facultyName: 'Jane Smith', department: 'Information Technology', designation: 'Assistant Professor Level-2', frsScore: -32 },
+    { id: 5, facultyId: '2024F005', facultyName: 'Michael Brown', department: 'Mechanical Engineering', designation: 'Associate Professor', frsScore: 45 },
+    // ... (rest of the rows)
+  ];
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
+
+  useEffect(() => {
+    const lowercasedFilter = searchText.toLowerCase();
+    const filteredData = rows.filter(item => {
+      return Object.keys(item).some(key =>
+        item[key].toString().toLowerCase().includes(lowercasedFilter)
+      );
+    });
+    setFilteredRows(filteredData);
+  }, [searchText, rows]);
 
   const handleBackClick = () => {
     navigate('/admin');
@@ -218,6 +258,7 @@ const FacultyFRS = () => {
   return (
     <div className="grid-full3">
       <div className="header-container">
+<<<<<<< HEAD
         <div className="frs-heading">
           <FontAwesomeIcon icon={faHistory} className="history-icon" />
           Faculty FRS Score
@@ -293,6 +334,47 @@ const FacultyFRS = () => {
   </Button>
 </div>
 
+=======
+        <div className='frs-heading'>
+          <FontAwesomeIcon icon={faHistory} className="history-icon" />
+          Faculty FRS Score
+        </div>
+        <TextField
+          variant="outlined"
+          placeholder="Search..."
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon sx={{color: '#bdbdbd'}}/>
+              </InputAdornment>
+            ),
+          }}
+          className="search-bar2"
+          sx={{
+            width: '300px',
+            '& .MuiOutlinedInput-root': {
+              height: '40px',
+              '& fieldset': {
+                borderColor: '#bdbdbd',
+              },
+              '&:hover fieldset': {
+                borderColor: '#1565c0',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: '#0d47a1',
+              },
+            },
+            '& .MuiInputAdornment-root': {
+              color: '#1e88e5',
+            },
+            '& .MuiOutlinedInput-input': {
+              padding: '8px 14px',
+            },
+          }}
+        />
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
       </div>
       <div className="data-grid-container" style={{height: '500px'}}>
         <DataGrid
@@ -304,7 +386,11 @@ const FacultyFRS = () => {
               paginationModel: { page: 0, pageSize: 100 },
             },
           }}
+<<<<<<< HEAD
           pageSizeOptions={[25, 50, 100]}
+=======
+          pageSizeOptions={[5, 10, 20, 50]}
+>>>>>>> f6a5ac9b81d5e744788973c3ebda3c2e1af791e4
           // checkboxSelection
           sx={{
             '& .MuiDataGrid-columnHeaderTitle': {
