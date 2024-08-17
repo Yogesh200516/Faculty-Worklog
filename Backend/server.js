@@ -9,11 +9,12 @@ const app = express();
 app.use(bodyParser.json());
 
 const SECRET_KEY = '3f102fd66ccbca0aadeed03cd0d31278c85503b5a4a708818a6db3420d8ba5973';
+const REFRESH_KEY =''
 
 const db = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: 'aravinth2006',
+    password: 'Yogesh@200516',
     database: 'faculty_project'
 });
 
@@ -106,58 +107,84 @@ app.post('/verticalhead', authenticateToken, async (req, res) => {
 });
 
 app.get('/verticalvisefrs/:id', authenticateToken, async (req, res) => {
-    const userId = req.params.id;
-    const query = `
-        SELECT 
-            vertical, 
-            COALESCE(SUM(CAST(frs_updated AS DECIMAL(10,2))), 0) AS total_frs_points
-        FROM 
-            frs_history
-        WHERE 
-            faculty_id = ?
-        GROUP BY 
-            vertical;
-    `;
+  const userId = req.params.id;
+
+  // Get the current date to determine the default semester and academic year
+  const now = new Date();
+  const currentMonth = now.getMonth() + 1;
+  const year = now.getFullYear();
   
-    try {
-        const [results] = await db.query(query, [userId]);
-        res.json(results);
-    } catch (error) {
-        console.error('Error executing query:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
+  // Determine the current academic year
+  const academicYear = (currentMonth >= 7) ? `${year}-${year + 1}` : `${year - 1}-${year}`;
+  // Determine the current semester
+  const semester = (currentMonth >= 7 && currentMonth <= 12) ? 'odd' : 'even';
+
+  const query = `
+      SELECT 
+          vertical, 
+          COALESCE(SUM(CAST(frs_updated AS DECIMAL(10,2))), 0) AS total_frs_points
+      FROM 
+          frs_history
+      WHERE 
+          faculty_id = ? AND
+          academic_year = ? AND
+          semester = ?
+      GROUP BY 
+          vertical;
+  `;
+
+  try {
+      const [results] = await db.query(query, [userId, academicYear, semester]);
+      res.json(results);
+  } catch (error) {
+      console.error('Error executing query:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
+
 
 app.get('/frssummary/:id', authenticateToken, async (req, res) => {
-    const userId = req.params.id;
+  const userId = req.params.id;
+  const now = new Date();
+  const currentMonth = now.getMonth() + 1;
+  const year = now.getFullYear();
+  const academicYear = (currentMonth >= 7) ? `${year}-${year + 1}` : `${year - 1}-${year}`;
+  const semester = (currentMonth >= 7 && currentMonth <= 12) ? 'odd' : 'even';
+  const query = `
+      SELECT 
+          COALESCE(SUM(CAST(frs_updated AS DECIMAL(10,2))), 0) AS total,
+          COALESCE(SUM(CASE WHEN frs_updated > 0 THEN CAST(frs_updated AS DECIMAL(10,2)) ELSE 0 END), 0) AS gained,
+          COALESCE(SUM(CASE WHEN frs_updated < 0 THEN CAST(frs_updated AS DECIMAL(10,2)) ELSE 0 END), 0) AS lost
+      FROM 
+          frs_history
+      WHERE 
+          faculty_id = ? AND
+          academic_year = ? AND
+          semester = ?
+  `;
 
-    const query = `
-        SELECT 
-            SUM(CAST(frs_updated AS DECIMAL(8))) AS total,
-            SUM(CASE WHEN frs_updated > 0 THEN CAST(frs_updated AS DECIMAL(8)) ELSE 0 END) AS gained,
-            SUM(CASE WHEN frs_updated < 0 THEN CAST(frs_updated AS DECIMAL(8)) ELSE 0 END) AS lost
-        FROM 
-            frs_history
-        WHERE 
-            faculty_id = ?
-    `;
+  try {
+      const [results] = await db.query(query, [userId, academicYear, semester]);
 
-    try {
-        const [results] = await db.query(query, [userId]);
+      if (!results || results.length === 0) {
+          return res.status(404).json({ error: 'User not found' });
+      }
 
-        if (results.length === 0) {
-            return res.status(404).send('User not found');
-        }
-
-        res.json(results[0]);
-    } catch (error) {
-        console.error('Error executing query:', error);
-        res.status(500).send('Internal Server Error');
-    }
+      res.json(results[0]);
+  } catch (error) {
+      console.error('Error executing query:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
+
 
 app.get('/recentfrs/:faculty_id', authenticateToken, async (req, res) => {
     const facultyId = req.params.faculty_id;
+    const now = new Date();
+    const currentMonth = now.getMonth() + 1;
+    const year = now.getFullYear();
+    const academicYear = (currentMonth >= 7) ? `${year}-${year + 1}` : `${year - 1}-${year}`;
+    const semester = (currentMonth >= 7 && currentMonth <= 12) ? 'odd' : 'even';
     const query = `
         SELECT 
             DATE_FORMAT(created_at, '%d-%m-%Y') AS date,
@@ -166,13 +193,15 @@ app.get('/recentfrs/:faculty_id', authenticateToken, async (req, res) => {
             reason_info,
             frs_updated AS frsUpdate
         FROM frs_history
-        WHERE faculty_id = ?
+        WHERE faculty_id = ? AND 
+          academic_year = ? AND
+          semester = ?
         ORDER BY created_at DESC
         LIMIT 5;
     `;
 
     try {
-        const [results] = await db.query(query, [facultyId]);
+        const [results] = await db.query(query, [facultyId,academicYear,semester]);
         res.status(200).json(results);
     } catch (err) {
         console.error('Error fetching recent FRS data:', err);
@@ -185,6 +214,7 @@ app.get('/facultyfrsgraph/:faculty_id/:vertical', authenticateToken, async (req,
 
     if (!faculty_id) {
         return res.status(400).json({ error: 'Faculty ID is required' });
+        
     }
 
     const query = `
@@ -195,6 +225,7 @@ app.get('/facultyfrsgraph/:faculty_id/:vertical', authenticateToken, async (req,
             frs_history
         WHERE
             faculty_id = ?
+            
             AND (vertical = ? OR ? = 'All')
         GROUP BY
             month
@@ -213,6 +244,12 @@ app.get('/facultyfrsgraph/:faculty_id/:vertical', authenticateToken, async (req,
 
 app.get('/frshistory/:faculty_id', authenticateToken, async (req, res) => {
     const facultyId = req.params.faculty_id;
+
+    const now = new Date();
+    const currentMonth = now.getMonth() + 1;
+    const year = now.getFullYear();
+    const academicYear = (currentMonth >= 7) ? `${year}-${year + 1}` : `${year - 1}-${year}`;
+    const semester = (currentMonth >= 7 && currentMonth <= 12) ? 'odd' : 'even';
     const query = `
         SELECT 
             DATE_FORMAT(created_at, '%d-%m-%Y') AS date,
@@ -222,11 +259,14 @@ app.get('/frshistory/:faculty_id', authenticateToken, async (req, res) => {
             frs_updated AS frsUpdate
         FROM frs_history
         WHERE faculty_id = ?
+         AND 
+          academic_year = ? AND
+          semester = ?
         ORDER BY created_at DESC;
     `;
 
     try {
-        const [results] = await db.query(query, [facultyId]);
+        const [results] = await db.query(query, [facultyId,academicYear,semester]);
         res.status(200).json(results);
     } catch (err) {
         console.error('Error fetching data:', err);
@@ -235,143 +275,133 @@ app.get('/frshistory/:faculty_id', authenticateToken, async (req, res) => {
 });
 
 app.get('/verticals/frs', authenticateToken, async (req, res) => {
-    const query = `
-        SELECT 
-            vertical,
-            SUM(CASE WHEN frs_updated > 0 THEN frs_updated ELSE 0 END) AS positiveScore,
-            SUM(CASE WHEN frs_updated < 0 THEN frs_updated ELSE 0 END) AS negativeScore
-        FROM frs_history
-        GROUP BY vertical;
-    `;
+  const now = new Date();
+  const currentMonth = now.getMonth() + 1;
+  const year = now.getFullYear();
+  const academicYear = (currentMonth >= 7) ? `${year}-${year + 1}` : `${year - 1}-${year}`;
+  const semester = (currentMonth >= 7 && currentMonth <= 12) ? 'odd' : 'even';
 
-    try {
-        const [results] = await db.query(query);
-        res.json(results);
-    } catch (err) {
-        console.error('Error executing query:', err);
-        res.status(500).send('Internal server error');
-    }
+  const query = `
+      SELECT 
+          vertical,
+          SUM(CASE WHEN frs_updated > 0 THEN frs_updated ELSE 0 END) AS positiveScore,
+          SUM(CASE WHEN frs_updated < 0 THEN frs_updated ELSE 0 END) AS negativeScore
+      FROM frs_history
+      WHERE 
+          academic_year = ? AND
+          semester = ?
+      GROUP BY vertical;
+  `;
+
+  try {
+      const [results] = await db.query(query, [academicYear, semester]);
+      res.json(results);
+  } catch (err) {
+      console.error('Error executing query:', err);
+      res.status(500).send('Internal server error');
+  }
 });
 
-app.get('/admin/frs/monthly',authenticateToken, async (req, res) => {
-    try {
-      const [rows] = await db.query(`
-        SELECT 
-            DATE_FORMAT(created_at, '%Y-%m') AS month,
-            SUM(CASE WHEN frs_updated > 0 THEN CAST(frs_updated AS DECIMAL) ELSE 0 END) AS total_gained,
-            SUM(CASE WHEN frs_updated < 0 THEN CAST(frs_updated AS DECIMAL) ELSE 0 END) AS total_lost
-        FROM frs_history
-        GROUP BY month
-        ORDER BY month;
-      `);
-      res.json(rows);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      res.status(500).send('Internal Server Error');
-    }
-  });
+
+app.get('/admin/frs/monthly', authenticateToken, async (req, res) => {
+  const now = new Date();
+  const currentMonth = now.getMonth() + 1;
+  const year = now.getFullYear();
+  const academicYear = (currentMonth >= 7) ? `${year}-${year + 1}` : `${year - 1}-${year}`;
+  const semester = (currentMonth >= 7 && currentMonth <= 12) ? 'odd' : 'even';
+
+  try {
+    const [rows] = await db.query(
+      `
+      SELECT 
+        DATE_FORMAT(created_at, '%Y-%m') AS month,
+        SUM(CASE WHEN frs_updated > 0 THEN CAST(frs_updated AS DECIMAL) ELSE 0 END) AS total_gained,
+        SUM(CASE WHEN frs_updated < 0 THEN CAST(frs_updated AS DECIMAL) ELSE 0 END) AS total_lost
+      FROM 
+        frs_history
+      WHERE
+        academic_year = ? AND
+        semester = ?
+      GROUP BY 
+        month
+      ORDER BY 
+        month;
+    `,
+      [academicYear, semester]
+    );
+
+    res.json({ frsSummary: rows });
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
+
 
 app.get('/admin/frs/verticals', authenticateToken, async (req, res) => {
-    try {
-        const query = `
-            SELECT 
-                vertical, 
-                SUM(CASE WHEN frs_updated > 0 THEN CAST(frs_updated AS DECIMAL) ELSE 0 END) AS total_provided
-            FROM frs_history
-            GROUP BY vertical;
-        `;
-        const [rows] = await db.query(query); // Directly handle the promise
-        res.json(rows);
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        res.status(500).send('Internal Server Error');
-    }
+  const now = new Date();
+  const currentMonth = now.getMonth() + 1;
+  const year = now.getFullYear();
+  const academicYear = (currentMonth >= 7) ? `${year}-${year + 1}` : `${year - 1}-${year}`;
+  const semester = (currentMonth >= 7 && currentMonth <= 12) ? 'odd' : 'even';
+
+  try {
+    const query = `
+      SELECT 
+        vertical, 
+        SUM(CASE WHEN frs_updated > 0 THEN CAST(frs_updated AS DECIMAL(8, 2)) ELSE 0 END) AS total_provided
+      FROM 
+        frs_history
+      WHERE 
+        academic_year = ? AND
+        semester = ?
+      GROUP BY 
+        vertical;
+    `;
+    const [rows] = await db.query(query, [academicYear, semester]);
+    res.json(rows);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+app.get('/api/negativedata', async (req, res) => {
+  const now = new Date();
+  const currentMonth = now.getMonth() + 1;
+  const year = now.getFullYear();
+  const academicYear = (currentMonth >= 7) ? `${year}-${year + 1}` : `${year - 1}-${year}`;
+  const semester = (currentMonth >= 7 && currentMonth <= 12) ? 'odd' : 'even';
+  const query = `
+    SELECT 
+      ff.id AS id,  -- Rename this to 'id'
+      ff.name AS facultyName,
+      ff.department,
+      ff.designation,
+      COALESCE(SUM(CASE WHEN fh.frs_updated < 0 THEN 1 ELSE 0 END), 0) AS totalNegativeUpdates
+    FROM 
+      faculty_frs ff
+    LEFT JOIN 
+      frs_history fh ON ff.id = fh.faculty_id
+    WHERE
+      ff.role = 'user' AND academic_year = ? AND
+        semester = ?
+    GROUP BY 
+      ff.id, ff.name, ff.department, ff.designation;
+  `;
+
+  try {
+    const [rows] = await db.query(query,[academicYear, semester]);
+    res.json(rows);
+  } catch (error) {
+    console.error('Error executing query:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
-app.get('/api/faculty', authenticateToken, async (req, res) => {
-    const { academicYear, semester } = req.query;
-  
-    // Function to generate the past three academic years
-    const generatePastAcademicYears = () => {
-      const currentYear = new Date().getFullYear();
-      const years = [];
-      for (let i = 0; i < 3; i++) {
-        const startYear = currentYear - i;
-        const endYear = startYear + 1;
-        years.push(`${startYear}-${endYear}`);
-      }
-      return years;
-    };
-  
-    const pastAcademicYears = generatePastAcademicYears();
-  
-    // Handle academicYear filter to include past three academic years
-    const academicYearFilter = academicYear && pastAcademicYears.includes(academicYear) ? [academicYear] : pastAcademicYears;
-  
-    // Build the base query
-    let query = `
-      SELECT
-        @row_number := @row_number + 1 AS sNo,
-        ff.id AS facultyId,
-        ff.name AS facultyName,
-        ff.department,
-        ff.designation,
-        SUM(fh.frs_updated) AS frsScore,
-        fh.academic_year AS academicYear,
-        ${semester ? 'fh.semester AS semester' : 'NULL AS semester'}
-      FROM faculty_frs ff
-      JOIN frs_history fh ON ff.id = fh.faculty_id
-      JOIN (SELECT @row_number := 0) AS rn
-      WHERE ff.role = 'user'
-      AND fh.academic_year IN (${academicYearFilter.map(() => '?').join(',')})
-    `;
-  
-    // Add filtering conditions for semester if provided
-    if (semester) {
-      query += `
-        AND fh.semester = ?
-      `;
-    }
-  
-    // Group the results
-    if (semester) {
-      query += `
-        GROUP BY ff.id, fh.academic_year, fh.semester
-      `;
-    } else {
-      query += `
-        GROUP BY ff.id, fh.academic_year
-      `;
-    }
-  
-    // Order by the total FRS score
-    query += `
-      ORDER BY frsScore DESC
-    `;
-  
-    try {
-      // Construct the parameters array
-      let params = [...academicYearFilter];
-      if (semester) {
-        params.push(semester);
-      }
-  
-      console.log('Generated Query:', query);
-      console.log('Parameters:', params);
-  
-      // Ensure this line is inside an async function
-      const [results] = await db.query(query, params);
-      res.json(results);
-    } catch (err) {
-      console.error('Error fetching faculty data:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  });
-  
 
-
-  
-app.get('/api/verticalhead/frs-summary/:id', authenticateToken, async (req, res) => {
+  app.get('/api/verticalhead/frs-summary/:id', authenticateToken, async (req, res) => {
     const verticalHeadId = req.params.id;
 
     try {
@@ -403,6 +433,11 @@ app.get('/api/verticalhead/frs-summary/:id', authenticateToken, async (req, res)
         };
 
         const verticalName = verticalMap[vertical];
+        const now = new Date();
+        const currentMonth = now.getMonth() + 1;
+        const year = now.getFullYear();
+        const academicYear = (currentMonth >= 7) ? `${year}-${year + 1}` : `${year - 1}-${year}`;
+        const semester = (currentMonth >= 7 && currentMonth <= 12) ? 'odd' : 'even';
 
         // Fetch the FRS summary
         const [summaryRows] = await db.query(`
@@ -411,7 +446,9 @@ app.get('/api/verticalhead/frs-summary/:id', authenticateToken, async (req, res)
                 COALESCE(SUM(CASE WHEN frs_updated < 0 THEN frs_updated ELSE 0 END), 0) AS frsTaken
             FROM frs_history
             WHERE vertical = ?
-        `, [verticalName]);
+            AND academic_year = ?
+            AND semester = ?
+        `, [verticalName, academicYear, semester]);
 
         const { frsProvided, frsTaken } = summaryRows[0];
 
@@ -421,57 +458,68 @@ app.get('/api/verticalhead/frs-summary/:id', authenticateToken, async (req, res)
         res.status(500).json({ message: 'Internal server error' });
     }
 });
+
 app.get('/api/verticalhead/record-summary/:id', authenticateToken, async (req, res) => {
-    const verticalHeadId = req.params.id;
+  const verticalHeadId = req.params.id;
 
-    try {
-        // Fetch the vertical(s) for the vertical head
-        const [verticalRows] = await db.query(`
-            SELECT vertical_coe, vertical_academics, vertical_iqac, vertical_skillteam, vertical_speciallab 
-            FROM faculty_frs 
-            WHERE id = ? AND role = 'vertical_head'
-        `, [verticalHeadId]);
+  try {
+      // Fetch the vertical(s) for the vertical head
+      const [verticalRows] = await db.query(`
+          SELECT vertical_coe, vertical_academics, vertical_iqac, vertical_skillteam, vertical_speciallab 
+          FROM faculty_frs 
+          WHERE id = ? AND role = 'vertical_head'
+      `, [verticalHeadId]);
 
-        if (verticalRows.length === 0) {
-            return res.status(404).json({ message: 'Vertical head not found' });
-        }
+      if (verticalRows.length === 0) {
+          return res.status(404).json({ message: 'Vertical head not found' });
+      }
 
-        const verticals = verticalRows[0];
-        const assignedVerticals = Object.keys(verticals).filter(key => verticals[key] === 1);
+      const verticals = verticalRows[0];
+      const assignedVerticals = Object.keys(verticals).filter(key => verticals[key] === 1);
 
-        if (assignedVerticals.length === 0) {
-            return res.status(404).json({ message: 'No verticals assigned to this vertical head' });
-        }
+      if (assignedVerticals.length === 0) {
+          return res.status(404).json({ message: 'No verticals assigned to this vertical head' });
+      }
 
-        // Convert vertical names to be used in the query
-        const verticalNames = {
-            vertical_coe: 'COE',
-            vertical_academics: 'Academics',
-            vertical_iqac: 'IQAC',
-            vertical_skillteam: 'Skill Team',
-            vertical_speciallab: 'Special Lab'
-        };
+      // Convert vertical names to be used in the query
+      const verticalNames = {
+          vertical_coe: 'COE',
+          vertical_academics: 'Academics',
+          vertical_iqac: 'IQAC',
+          vertical_skillteam: 'Skill Team',
+          vertical_speciallab: 'Special Lab'
+      };
 
-        const verticalNameList = assignedVerticals.map(v => verticalNames[v]);
+      const verticalNameList = assignedVerticals.map(v => verticalNames[v]);
 
-        // Query the FRS history based on the vertical(s)
-        const [updateRows] = await db.query(`
-            SELECT 
-                COUNT(*) AS totalUpdates,
-                SUM(CASE WHEN frs_updated > 0 THEN 1 ELSE 0 END) AS positiveUpdates,
-                SUM(CASE WHEN frs_updated < 0 THEN 1 ELSE 0 END) AS negativeUpdates
-            FROM frs_history
-            WHERE vertical IN (?)
-        `, [verticalNameList]);
+      // Determine the current academic year and semester
+      const now = new Date();
+      const currentMonth = now.getMonth() + 1;
+      const year = now.getFullYear();
+      const academicYear = (currentMonth >= 7) ? `${year}-${year + 1}` : `${year - 1}-${year}`;
+      const semester = (currentMonth >= 7 && currentMonth <= 12) ? 'odd' : 'even';
 
-        const { totalUpdates, positiveUpdates, negativeUpdates } = updateRows[0];
+      // Query the FRS history based on the vertical(s)
+      const [updateRows] = await db.query(`
+          SELECT 
+              COUNT(*) AS totalUpdates,
+              SUM(CASE WHEN frs_updated > 0 THEN 1 ELSE 0 END) AS positiveUpdates,
+              SUM(CASE WHEN frs_updated < 0 THEN 1 ELSE 0 END) AS negativeUpdates
+          FROM frs_history
+          WHERE vertical IN (?) 
+          AND academic_year = ?
+          AND semester = ?
+      `, [verticalNameList, academicYear, semester]);
 
-        res.json({ totalUpdates, positiveUpdates, negativeUpdates });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Internal server error' });
-    }
+      const { totalUpdates, positiveUpdates, negativeUpdates } = updateRows[0];
+
+      res.json({ totalUpdates, positiveUpdates, negativeUpdates });
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Internal server error' });
+  }
 });
+
 app.get('/api/verticalhead/:id/frs-summary', authenticateToken, async (req, res) => {
     const verticalHeadId = req.params.id;
 
@@ -555,6 +603,13 @@ app.get('/api/verticalhead/:id/VerticalFrs', authenticateToken, async (req, res)
       };
   
       const verticalName = verticalMap[assignedVertical];
+
+      const now = new Date();
+      const currentMonth = now.getMonth() + 1;
+      const year = now.getFullYear();
+      const academicYear = (currentMonth >= 7) ? `${year}-${year + 1}` : `${year - 1}-${year}`;
+      const semester = (currentMonth >= 7 && currentMonth <= 12) ? 'odd' : 'even';
+
   
       const [frshistory] = await db.query(`
         SELECT 
@@ -573,7 +628,9 @@ app.get('/api/verticalhead/:id/VerticalFrs', authenticateToken, async (req, res)
           fh.faculty_id = ff.id
         WHERE 
           fh.vertical = ?
-      `, [verticalName]);
+            AND academic_year = ?
+            AND semester = ?
+      `, [verticalName, academicYear, semester]);
   
       res.json({ vertical: verticalName, frsSummary: frshistory });
     } catch (error) {
@@ -670,10 +727,183 @@ app.get('/api/faculty_frs', async (req, res) => {
       res.status(500).json({ message: 'Error processing bulk submission', error: error.message });
     }
   });
-    
+  app.get('/api/facultytotalupdates', authenticateToken, async (req, res) => {
+    const { academicYear, semester } = req.query;
+
+    // Function to generate the past three academic years
+    const generatePastAcademicYears = () => {
+        const currentYear = new Date().getFullYear();
+        const years = [];
+        for (let i = 0; i < 3; i++) {
+            const startYear = currentYear - i;
+            const endYear = startYear + 1;
+            years.push(`${startYear}-${endYear}`);
+        }
+        return years;
+    };
+
+    const pastAcademicYears = generatePastAcademicYears();
+
+    const academicYearFilter = academicYear && pastAcademicYears.includes(academicYear) ? [academicYear] : pastAcademicYears;
+
+    // Build the base query
+    let query = `
+      SELECT
+        ff.id AS facultyId,
+        ff.name AS facultyName,
+        ff.department,
+        ff.designation,
+        SUM(fh.frs_updated) AS frsScore,
+        SUM(CASE WHEN fh.frs_updated > 0 THEN 1 ELSE 0 END) AS positiveCount,
+        SUM(CASE WHEN fh.frs_updated < 0 THEN 1 ELSE 0 END) AS negativeCount,
+        fh.academic_year AS academicYear,
+        fh.semester AS semester
+      FROM faculty_frs ff
+      JOIN frs_history fh ON ff.id = fh.faculty_id
+      WHERE ff.role = 'user'
+      AND fh.academic_year IN (${academicYearFilter.map(() => '?').join(',')})
+      ${semester ? 'AND fh.semester = ?' : ''}
+      GROUP BY ff.id, fh.academic_year, fh.semester
+      ORDER BY frsScore DESC
+    `;
+
+    try {
+        // Construct the parameters array
+        const params = [...academicYearFilter];
+        if (semester) {
+            params.push(semester);
+        }
+
+        console.log('Generated Query:', query);
+        console.log('Parameters:', params);
+
+        // Ensure this line is inside an async function
+        const [results] = await db.query(query, params);
+        res.json(results);
+    } catch (err) {
+        console.error('Error fetching faculty data:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 
+
+app.get('/api/faculty', authenticateToken, async (req, res) => {
+    const { academicYear, semester } = req.query;
   
+    // Function to generate the past three academic years
+    const generatePastAcademicYears = () => {
+      const currentYear = new Date().getFullYear();
+      const years = [];
+      for (let i = 0; i < 3; i++) {
+        const startYear = currentYear - i;
+        const endYear = startYear + 1;
+        years.push(`${startYear}-${endYear}`);
+      }
+      return years;
+    };
+  
+    const pastAcademicYears = generatePastAcademicYears();
+  
+    // Handle academicYear filter to include past three academic years
+    const academicYearFilter = academicYear && pastAcademicYears.includes(academicYear) ? [academicYear] : pastAcademicYears;
+  
+    // Build the base query
+    let query = `
+      SELECT
+        @row_number := @row_number + 1 AS sNo,
+        ff.id AS facultyId,
+        ff.name AS facultyName,
+        ff.department,
+        ff.designation,
+        SUM(fh.frs_updated) AS frsScore,
+        fh.academic_year AS academicYear,
+        ${semester ? 'fh.semester AS semester' : 'NULL AS semester'}
+      FROM faculty_frs ff
+      JOIN frs_history fh ON ff.id = fh.faculty_id
+      JOIN (SELECT @row_number := 0) AS rn
+      WHERE ff.role = 'user'
+      AND fh.academic_year IN (${academicYearFilter.map(() => '?').join(',')})
+    `;
+  
+
+    if (semester) {
+      query += `
+        AND fh.semester = ?
+      `;
+    }
+    if (semester) {
+      query += `
+        GROUP BY ff.id, fh.academic_year, fh.semester
+      `;
+    } else {
+      query += `
+        GROUP BY ff.id, fh.academic_year
+      `;
+    }
+    query += `
+      ORDER BY frsScore DESC
+    `;
+  
+    try {
+    
+      let params = [...academicYearFilter];
+      if (semester) {
+        params.push(semester);
+      }
+  
+      console.log('Generated Query:', query);
+      console.log('Parameters:', params);
+  
+    
+      const [results] = await db.query(query, params);
+      res.json(results);
+    } catch (err) {
+      console.error('Error fetching faculty data:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
+  app.get('/api/popup/:facultyId', async (req, res) => {
+    const { facultyId } = req.params;
+    const { academicYear, semester } = req.query; 
+  
+    console.log("Faculty ID:", facultyId);
+    console.log("Academic Year:", academicYear);
+    console.log("Semester:", semester);
+    
+  
+    try {
+  
+      let query = `
+        SELECT
+          id AS serialNo,
+          DATE_FORMAT(created_at, '%d-%m-%Y') AS date,
+          academic_year AS academicYear,
+          semester AS semester,
+          vertical,
+          reason,
+          frs_updated AS updatedFRS
+        FROM
+          frs_history 
+        WHERE
+          faculty_id = ? AND academic_year = ? AND semester = ? 
+      `;
+  
+      const queryParams = [facultyId,academicYear,semester];
+        query += ` ORDER BY created_at DESC`;
+  
+      const [rows] = await db.query(query, queryParams);
+  
+      // Send response with FRS data
+      res.json(rows);
+    } catch (error) {
+      console.error('Error fetching FRS data:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+  
+
 const PORT = 4000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
