@@ -49,7 +49,7 @@ function Admin() {
       </div>
       <RecentUpdates /> */}
       <div className="leaderboard-frs">
-        <EventDetails />
+        {/* <EventDetails /> */}
         <Leaderboard />
       </div>
     </div>

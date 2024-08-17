@@ -78,7 +78,7 @@ function RecentFRS({ user }) {
           <div className="popup" onClick={(e) => e.stopPropagation()}>
             <div className="popup-header">
               <h2>Update Summary</h2>
-              <button className="close-button" onClick={handleClosePopup}>x</button>
+              {/* <button className="close-button" onClick={handleClosePopup} style={{marginTop: '16px'}}>x</button> */}
             </div>
             <div className="popup-content">
               <div className="content">
@@ -91,11 +91,12 @@ function RecentFRS({ user }) {
               </div>
               <div className="content">
                 <p><strong>Reason:</strong></p>
-                <p>{selectedRow.reason}</p>
+                <p>
+                {selectedRow.reason_info}</p>
               </div>
               <div className="content">
                 <p><strong>Reason Info:</strong></p>
-                <p>{selectedRow.reason_info}</p>
+                <p>{selectedRow.reason}</p>
               </div>
               <div className="content">
                 <p><strong>FRS Update:</strong></p>

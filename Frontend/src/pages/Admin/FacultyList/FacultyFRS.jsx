@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from 'react-router-dom';
-import { TextField, InputAdornment, Button, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { TextField, InputAdornment, Button, MenuItem, Select, FormControl, } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHistory, faDownload } from '@fortawesome/free-solid-svg-icons';
 import './FacultyFRS.css';
 import { jwtDecode } from 'jwt-decode';
-import { downloadExcel } from './Excel1'; // Import downloadExcel
+import { downloadExcel } from './Excel1'; 
+import { fontWeight } from '@mui/system';
 
 function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
@@ -40,7 +41,6 @@ const FacultyFRS = () => {
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState('');
 
-  // Helper function to generate the last three academic years
   const generateAcademicYearOptions = () => {
     const currentYear = new Date().getFullYear();
     const options = [];
@@ -78,22 +78,23 @@ const FacultyFRS = () => {
 
   const getColumnWidth = () => {
     if (width < 1024) {
-      return { id: 40, facultyId: 80, facultyName: 110, department: 100, designation: 110, frsScore: 60, semester: 50, academicYear: 70 };
+      return { id: 40, facultyId: 80, facultyName: 110, department: 150, designation: 150, frsScore: 100, semester: 50, academicYear: 100 };
     } else {
-      return { id: 60, facultyId: 120, facultyName: 140, department: 150, designation: 160, frsScore: 120, semester: 90, academicYear: 120 };
+      return { id: 60, facultyId: 120, facultyName: 140, department: 200, designation: 200, frsScore: 120, semester: 90, academicYear: 120 };
     }
   };
 
   const columnWidths = getColumnWidth();
 
   const columns = [
-    { field: 'sNo', headerName: 'S.No', width: columnWidths.id },
+    { field: 'sNo', headerName: 'S.No', align: 'center', fontWeight: 'bold', width: columnWidths.id },
+    { field: 'semester', headerName: 'Semester', width: columnWidths.semester },
+    { field: 'academicYear', headerName: 'Academic Year', width: columnWidths.academicYear },
     { field: 'facultyId', headerName: 'Faculty ID', width: columnWidths.facultyId },
     { field: 'facultyName', headerName: 'Faculty Name', width: columnWidths.facultyName },
     { field: 'department', headerName: 'Department', width: columnWidths.department },
     { field: 'designation', headerName: 'Designation', width: columnWidths.designation },
-    { field: 'semester', headerName: 'Semester', width: columnWidths.semester },
-    { field: 'academicYear', headerName: 'Academic Year', width: columnWidths.academicYear },
+
     {
       field: 'frsScore',
       headerName: 'FRS Score',
@@ -113,58 +114,58 @@ const FacultyFRS = () => {
 
   const fetchFacultyData = async () => {
     const token = localStorage.getItem('jwt');
-    
+
     if (!token || !checkTokenValidity(token)) {
-      setError('Token has expired or is invalid');
-      return;
+        setError('Token has expired or is invalid');
+        return;
     }
-    
+
     try {
-      let academicYear = '';
-      let semester = '';
-  
-      if (filter && filter !== '') {
-        [academicYear, semester] = filter.split(':');
-      } else {
-        // Set to current semester if filter is "All" or empty
-        const currentSemester = getCurrentSemester();
-        [academicYear, semester] = currentSemester.split(':');
-      }
-      
-      const query = new URLSearchParams({
-        academicYear: academicYear || '',
-        semester: semester || ''
-      }).toString();
-    
-      const response = await fetch(`http://localhost:4000/api/faculty?${query}`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-    
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-    
-      let data = await response.json();
-    
-      // Update the semester field in the data based on the selected filter
-      if (semester) {
-        data = data.map(item => ({
-          ...item,
-          semester: semester
-        }));
-      }
-    
-      const sortedData = data.sort((a, b) => b.frsScore - a.frsScore);
-      setRows(sortedData);
+        let academicYear = '';
+        let semester = '';
+
+        if (filter && filter !== 'All') {
+            [academicYear, semester] = filter.split(':');
+        } else {
+            const currentSemester = getCurrentSemester();
+            [academicYear, semester] = currentSemester.split(':');
+        }
+
+        const query = new URLSearchParams({
+            academicYear: academicYear || '',
+            semester: semester || ''
+        }).toString();
+
+        const response = await fetch(`http://localhost:4000/api/faculty?${query}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        let data = await response.json();
+
+        
+        if (semester) {
+            data = data.map(item => ({
+                ...item,
+                semester: semester
+            }));
+        }
+
+        const sortedData = data.sort((a, b) => b.frsScore - a.frsScore);
+        setRows(sortedData);
     } catch (error) {
-      console.error('Error fetching faculty data:', error);
-      setError(error.message);
+        console.error('Error fetching faculty data:', error);
+        setError(error.message);
     }
-  };
+};
+
   
   useEffect(() => {
     fetchFacultyData();
@@ -173,39 +174,45 @@ const FacultyFRS = () => {
   useEffect(() => {
     let lowercasedFilter = searchText.toLowerCase();
     let filteredData = rows.filter((item) => {
-      return Object.keys(item).some((key) =>
-        item[key].toString().toLowerCase().includes(lowercasedFilter)
-      );
+        return Object.keys(item).some((key) =>
+            item[key].toString().toLowerCase().includes(lowercasedFilter)
+        );
     });
 
-    if (filter) {
-      const [academicYear, semester] = filter.split(':');
-      if (semester && academicYear) {
+    if (filter && filter !== 'All') {
+        const [academicYear, semester] = filter.split(':');
+        if (semester && academicYear) {
+            filteredData = filteredData.filter((item) =>
+                item.semester === semester && item.academicYear === academicYear
+            );
+        } else if (semester) {
+            filteredData = filteredData.filter((item) => item.semester === semester);
+        } else if (academicYear) {
+            filteredData = filteredData.filter((item) => item.academicYear === academicYear);
+        }
+    } else {
+        const [currentAcademicYear, currentSemester] = getCurrentSemester().split(':');
         filteredData = filteredData.filter((item) =>
-          item.semester === semester && item.academicYear === academicYear
+            item.semester === currentSemester && item.academicYear === currentAcademicYear
         );
-      } else if (semester) {
-        filteredData = filteredData.filter((item) => item.semester === semester);
-      } else if (academicYear) {
-        filteredData = filteredData.filter((item) => item.academicYear === academicYear);
-      }
     }
 
-    // Add sequential sNo
+  
     const updatedFilteredData = filteredData.map((item, index) => ({
-      ...item,
-      sNo: index + 1, // Start numbering from 1
+        ...item,
+        sNo: index + 1, 
     }));
 
     setFilteredRows(updatedFilteredData);
-  }, [searchText, rows, filter]);
+}, [searchText, rows, filter]);
+
 
   const handleBackClick = () => {
     navigate('/admin');
   };
 
   const handleDownload = () => {
-    downloadExcel(filteredRows, columns); // Use downloadExcel for Excel export
+    downloadExcel(filteredRows, columns); 
   };
 
   return (
@@ -216,80 +223,89 @@ const FacultyFRS = () => {
           Faculty FRS Score
         </div>
         <div className="actions-container">
-          <TextField
-            variant="outlined"
-            placeholder="Search..."
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{ color: '#bdbdbd' }} />
-                </InputAdornment>
-              ),
-            }}
-            className="search-bar2"
-            sx={{
-              width: '200px',
-              '& .MuiOutlinedInput-root': {
-                height: '40px',
-                '& fieldset': {
-                  borderColor: '#bdbdbd',
-                },
-                '&:hover fieldset': {
-                  borderColor: '#1565c0',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#0d47a1',
-                },
-              },
-              '& .MuiInputAdornment-root': {
-                color: '#1e88e5',
-              },
-              '& .MuiOutlinedInput-input': {
-                padding: '8px 14px',
-              },
-            }}
-          />
-          <FormControl sx={{ minWidth: 150, marginLeft: 1 }}>
-            <InputLabel>Filter</InputLabel>
-            <Select
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-              label="Filter"
-            >
-              <MenuItem value="">
-                <em>All</em>
-              </MenuItem>
-              {academicYearOptions.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <Button
-            variant="contained"
-            startIcon={<FontAwesomeIcon icon={faDownload} />}
-            onClick={handleDownload}
-            sx={{ marginLeft: 1, backgroundColor: '#1565c0', color: '#fff' }}
-          >
-            Download
-          </Button>
-        </div>
+  <TextField
+    variant="outlined"
+    placeholder="Search..."
+    value={searchText}
+    onChange={(e) => setSearchText(e.target.value)}
+    InputProps={{
+      startAdornment: (
+        <InputAdornment position="start">
+          <SearchIcon sx={{ color: '#bdbdbd', height: '40px'}} />
+        </InputAdornment>
+      ),
+    }}
+    className="search-bar2"
+    sx={{
+      
+      '& .MuiOutlinedInput-root': {
+        height: '40px',
+        '& fieldset': {
+          borderColor: '#bdbdbd',
+        },
+        '&:hover fieldset': {
+          borderColor: '#1565c0',
+        },
+        '&.Mui-focused fieldset': {
+          borderColor: '#0d47a1',
+        },
+      },
+      '& .MuiInputAdornment-root': {
+        color: '#1e88e5',
+      },
+      '& .MuiOutlinedInput-input': {
+        padding: '8px 14px',
+        height: '40px', 
+      },
+    }}
+  />
+  <FormControl sx={{ minWidth: 200, marginLeft: 1, height: '40px' }}>
+    <Select
+      value={filter}
+      onChange={(e) => setFilter(e.target.value)}
+      sx={{ height: '40px' }} 
+    >
+      <MenuItem value="All">
+        <em>All</em>
+      </MenuItem>
+      {academicYearOptions.map((option) => (
+        <MenuItem key={option.value} value={option.value}>
+          {option.label}
+        </MenuItem>
+      ))}
+    </Select>
+  </FormControl>
+  <Button
+    variant="contained"
+    startIcon={<FontAwesomeIcon icon={faDownload} />}
+    onClick={handleDownload}
+    sx={{ 
+      marginLeft: 1, 
+      backgroundColor: '#1565c0', 
+      color: '#fff', 
+      minWidth: '120px',
+      height: '38px', // Ensure button height matches
+      display: 'flex',
+      
+    }}
+  >
+    Download
+  </Button>
+</div>
+
       </div>
-      <div className="data-grid-container">
+      <div className="data-grid-container" style={{height: '500px'}}>
         <DataGrid
           rows={filteredRows}
           columns={columns}
           getRowId={(row) => row.sNo} // Use sNo as the unique ID
           initialState={{
             pagination: {
-              paginationModel: { page: 0, pageSize: 10 },
+              paginationModel: { page: 0, pageSize: 100 },
             },
           }}
-          pageSizeOptions={[5, 10, 20]}
-          checkboxSelection
+          pageSizeOptions={[25, 50, 100]}
+          // checkboxSelection
           sx={{
             '& .MuiDataGrid-columnHeaderTitle': {
               fontWeight: 'bold',
@@ -304,6 +320,15 @@ const FacultyFRS = () => {
               justifyContent: 'space-between',
               flexWrap: 'wrap',
             },
+            '& .MuiDataGrid-cell:focus': {
+      outline: 'none',
+    },
+    '& .MuiDataGrid-cell:focus-within': {
+      outline: 'none',
+    },
+    '& .MuiButtonBase-root:focus': {
+      outline: 'none',
+    },
             '& .MuiTablePagination-root': {
               display: 'flex',
               justifyContent: 'center',

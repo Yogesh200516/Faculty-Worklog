@@ -26,10 +26,8 @@ function useWindowSize() {
 
 export default function SimpleBarChart() {
   const { width } = useWindowSize();
-  const [firstSemesterGained, setFirstSemesterGained] = useState([]);
-  const [firstSemesterLost, setFirstSemesterLost] = useState([]);
-  const [secondSemesterGained, setSecondSemesterGained] = useState([]);
-  const [secondSemesterLost, setSecondSemesterLost] = useState([]);
+  const [gainedData, setGainedData] = useState([]);
+  const [lostData, setLostData] = useState([]);
   const [months, setMonths] = useState([]);
   const [currentSemester, setCurrentSemester] = useState('');
 
@@ -47,18 +45,11 @@ export default function SimpleBarChart() {
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-        const data = await response.json();
+        const { frsSummary: data } = await response.json();
 
-        console.log('Fetched data:', data);
-
-        if (!Array.isArray(data)) {
-          throw new Error('Expected an array but got a different type');
-        }
-
-        // Determine current semester
-        const currentMonth = new Date().getMonth() + 1; // Get current month (1-12)
+        const currentMonth = new Date().getMonth() + 1;
         const isFirstSemester = currentMonth <= 6;
-        setCurrentSemester(isFirstSemester ? 'First Semester' : 'Second Semester');
+        setCurrentSemester(isFirstSemester ? 'Even Semester' : 'Odd Semester');
 
         const monthNames = {
           '01': 'January',
@@ -75,101 +66,98 @@ export default function SimpleBarChart() {
           '12': 'December',
         };
 
-        const firstGained = [];
-        const firstLost = [];
-        const secondGained = [];
-        const secondLost = [];
-        const semesterMonths = [];
+        const getSemesterMonths = () => {
+          const monthsList = [];
+          for (let i = 1; i <= 6; i++) {
+            const month = (i < 10 ? '0' : '') + i;
+            monthsList.push(monthNames[month]);
+          }
+          return monthsList;
+        };
+
+        const getOddSemesterMonths = () => {
+          const monthsList = [];
+          for (let i = 7; i <= 12; i++) {
+            const month = (i < 10 ? '0' : '') + i;
+            monthsList.push(monthNames[month]);
+          }
+          return monthsList;
+        };
+
+        const allMonths = currentSemester === 'Odd Semester' ? getOddSemesterMonths() : getSemesterMonths();
+
+        const gained = new Array(allMonths.length).fill(0);
+        const lost = new Array(allMonths.length).fill(0);
 
         data.forEach(item => {
-          const month = item.month.split('-')[1];
+          const [year, month] = item.month.split('-');
           const monthName = monthNames[month];
-          if (!semesterMonths.includes(monthName)) {
-            semesterMonths.push(monthName);
-          }
+          const monthIndex = allMonths.indexOf(monthName);
 
-          if (parseInt(item.month.split('-')[1]) <= 6) {
-            // First Semester
-            firstGained.push(parseFloat(item.total_gained) || 0);
-            firstLost.push(Math.abs(parseFloat(item.total_lost)) || 0);
-          } else {
-            // Second Semester
-            secondGained.push(parseFloat(item.total_gained) || 0);
-            secondLost.push(Math.abs(parseFloat(item.total_lost)) || 0);
+          if (monthIndex !== -1) {
+            gained[monthIndex] = parseFloat(item.total_gained) || 0;
+            lost[monthIndex] = Math.abs(parseFloat(item.total_lost)) || 0;
           }
         });
 
-        console.log('First Semester Gained:', firstGained);
-        console.log('First Semester Lost:', firstLost);
-        console.log('Second Semester Gained:', secondGained);
-        console.log('Second Semester Lost:', secondLost);
-        console.log('Months:', semesterMonths);
-
-        setFirstSemesterGained(firstGained);
-        setFirstSemesterLost(firstLost);
-        setSecondSemesterGained(secondGained);
-        setSecondSemesterLost(secondLost);
-        setMonths(semesterMonths);
+        setGainedData(gained);
+        setLostData(lost);
+        setMonths(allMonths);
       } catch (error) {
         console.error('Error fetching FRS data:', error);
       }
     };
 
     fetchFRSData();
-  }, []);
+  }, [currentSemester]);
 
   const getChartDimensions = () => {
-    if (width <= 1024) {
+    if (width <= 1024 && width > 980 ) {
       return { width: 980, height: 400 };
-    } else if (width < 900) {
+    } else if (width <= 900 && width > 768) {
       return { width: 820, height: 380 };
-    } else if (width < 768) {
+    } else if (width <= 768 && width > 600) {
       return { width: 700, height: 350 };
-    } else if (width < 600) {
+    } else if (width <= 600 && width > 500) {
       return { width: 550, height: 330 };
-    } else if (width < 500) {
-      return { width: 450, height: 400 };
-    } else if (width < 425) {
-      return { width: 390, height: 380 };
-    } else if (width < 400) {
-      return { width: 360, height: 380 };
+    } else if (width <= 500 && width > 425) {
+      return { width: 480, height: 400 };
+    } else if (width <= 425) {
+      return { width: 410, height: 380 };
+    } else if (width <= 400 && width > 320) {
+      return { width: 380, height: 380 };
+    } else if (width <= 350 && width > 300) {
+      return { width: 340, height: 340 };
     } else {
-      return { width: 600, height: 350 };
+      return { width: 640, height: 300 };
     }
   };
 
   const { width: chartWidth, height: chartHeight } = getChartDimensions();
 
+  const renderBarChart = (semesterMonths, gainedData, lostData) => {
+    if (semesterMonths.length === 0 || gainedData.length === 0 || lostData.length === 0) {
+      return <p>No data available for this semester</p>;
+    }
+    return (
+      <BarChart
+        width={chartWidth}
+        height={chartHeight}
+        series={[
+          { data: gainedData, label: 'FRS Given', id: 'gainedId' },
+          { data: lostData, label: 'FRS Taken', id: 'lostId', stackId: 'stack' },
+        ]}
+        xAxis={[{ data: semesterMonths, scaleType: 'band' }]}
+      />
+    );
+  };
+
   return (
-    <>
-      {currentSemester === 'First Semester' && (
-        <div style={{ marginBottom: '20px' }}>
-          <h3>Even Semester</h3>
-          <BarChart
-            width={chartWidth}
-            height={chartHeight}
-            series={[
-              { data: firstSemesterGained, label: 'FRS Given', id: 'firstGainedId' },
-              { data: firstSemesterLost, label: 'FRS Taken', id: 'firstLostId', stackId: 'stack' },
-            ]}
-            xAxis={[{ data: months.slice(0, 6), scaleType: 'band' }]}
-          />
-        </div>
-      )}
-      {currentSemester === 'Second Semester' && (
-        <div>
-          <h3>Odd Semester</h3>
-          <BarChart
-            width={chartWidth}
-            height={chartHeight}
-            series={[
-              { data: secondSemesterGained, label: 'FRS Given', id: 'secondGainedId' },
-              { data: secondSemesterLost, label: 'FRS Taken', id: 'secondLostId', stackId: 'stack' },
-            ]}
-            xAxis={[{ data: months.slice(6), scaleType: 'band' }]}
-          />
-        </div>
-      )}
-    </>
+    <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
+      <h3>{currentSemester}</h3>
+      <div style={{ minWidth: `${chartWidth}px` }}>
+        {renderBarChart(months, gainedData, lostData)}
+      </div>
+    </div>
   );
 }

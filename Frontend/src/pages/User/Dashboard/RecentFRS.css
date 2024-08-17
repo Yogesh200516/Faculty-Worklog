@@ -96,6 +96,70 @@
   background-color: #90caf9;
 }
 
-@media (max-width: 500px) {
-
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.3s ease;
 }
+
+.popup {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  width: 600px;
+  max-width: 90%;
+  padding: 20px;
+  position: relative;
+  text-align: left;
+  animation: slideIn 0.3s ease;
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+  .popup {
+    width: 40%;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .popup {
+    width: 50%;
+  }
+}
+
+@media (min-width: 900px) and (max-width: 1023px) {
+  .popup {
+    width: 60%;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 899px) {
+  .popup {
+    width: 70%;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 767px) {
+  .popup {
+    width: 65%;
+  }
+}
+
+@media (max-width: 599px) {
+  .popup {
+    width: 75%;
+  }
+}
+
+@media (max-width: 450px) {
+  .popup {
+    width: 80%;
+  }
+} 

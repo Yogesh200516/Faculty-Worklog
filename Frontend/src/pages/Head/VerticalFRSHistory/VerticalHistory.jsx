@@ -153,7 +153,7 @@ const FacultyFRS = ({ user }) => {
             }}
             className="search-bar2"
             sx={{
-              width: '300px',
+            
               '& .MuiOutlinedInput-root': {
                 height: '40px',
                 '& fieldset': {

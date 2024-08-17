@@ -64,13 +64,13 @@
 
 @media (max-width: 1050px) and (min-width: 768px) {
     .summary-image2 {
-        margin-left: 10px;
+        margin-left: 20px;
         height: 50px;
         width: 50px;
         margin-top: 20px;
     }  
     .summary-title2 {
-        font-size: 16px;
+        font-size: 18px;
         font-weight: bold;
         color: #757575;
     }   
@@ -78,7 +78,7 @@
         display: flex;
         flex-direction: column;
         margin-left: 10px;
-        margin-top: 30px;
+        margin-top: 25px;
     }  
     .summary-value2 {
         font-size: 18px;
@@ -89,27 +89,27 @@
 
 @media (max-width: 600px) {
     .summary-image2 {
-        height: 50px;
-        width: 50px;
+        height: 60px;
+        width: 60px;
     }
     .summary-title2 {
-        font-size: 16px;
+        font-size: 22px;
     }
 }
 
 @media (max-width: 500px) {
     .summary-image2 {
-        height: 50px;
-        width: 50px;
+        height: 70px;
+        width: 70px;
     }
     .summary-title2 {
-        font-size: 14px;
+        font-size: 20px;
     }
     .summary-text2 {
         display: flex;
     }
     .summary-value2 {
-        font-size: 18px;
+        font-size: 20px;
     }
 }
 
@@ -120,12 +120,12 @@
     .left-content {
         display: grid;
         gap: 10px;
-        height: 280px;
+        height: 320px;
     }
     .summary-image2 {
-        height: 70px;
-        width: 70px;
-        margin-left: 70px;
+        height: 80px;
+        width: 80px;
+        margin-left: 100px;
     }
     .summary-title2 {
         font-size: 24px;

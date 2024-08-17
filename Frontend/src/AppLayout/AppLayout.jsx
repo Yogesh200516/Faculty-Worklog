@@ -10,12 +10,12 @@ import FRSEntry from '../pages/Head/FRSEntry/FRSEntry';
 import Admin from '../pages/Admin/AdminDashboard/Admin';
 import VerticalwiseFRS from '../pages/Admin/FRSVertical/FRSVertical';
 import DepartmentwiseFRS from '../pages/Admin/FRSDepartment/FRSDepartment';
-import Leaderboard from '../pages/Admin/Leaderboard/Leaderboard';
 import FacultyFRS from '../pages/Admin/FacultyList/FacultyFRS';
 import LoginPage from '../components/LoginPage/LoginPage';
 import VerticalGrid from '../pages/User/Dashboard/VerticalGrid';
 import VerticalHistory from '../pages/Head/VerticalFRSHistory/VerticalHistory';
-import FacultyTable from '../pages/HR/Facultytable';
+import FacultyTable from '../pages/Admin/FacultyList/FacultyFRS';
+import FacultyDetails from '../pages/Admin/FacultyDetails/FacultyDetails';
 
 const AppLayout = () => {
   const [user, setUser] = useState(null);
@@ -96,7 +96,7 @@ const AppLayout = () => {
               <Route path="/" element={<Admin user={user} />} />
               <Route path="/verticalwise-frs" element={<VerticalwiseFRS />} />
               <Route path="/departmentwise-frs" element={<DepartmentwiseFRS />} />
-              <Route path="/leaderboard" element={<Leaderboard />} />
+              <Route path="/faculty-details" element={<FacultyDetails />} />
               <Route path="/faculty-entry" element={<FacultyFRS />} />
             </>
           )}
@@ -119,6 +119,7 @@ const AppLayout = () => {
           {user?.role === 'hr' && (
             <>
               <Route path="/" element={<FacultyTable user={user} />} />
+              <Route path="/faculty-details" element={<FacultyDetails />} />
             </>
           )}
           <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />

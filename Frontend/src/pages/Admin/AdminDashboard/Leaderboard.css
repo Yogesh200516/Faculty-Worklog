@@ -1,13 +1,15 @@
 .grid-full2 {
   background-color: white;
   border-radius: 5px;
-  width: calc(66.67% - 10px);
-  height: 400px;
+  width: 100%;
+  height: 450px;
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  margin-top: 30px;
+  margin-bottom: 30px;
 }
 
 .grid2-head {
@@ -18,7 +20,7 @@
   color: #616161;
   font-weight: bold;
   margin-bottom: 10px;
-  padding-right: 10px;
+  padding-right: 0px;
 }
 
 .data-grid-wrapper {
@@ -49,6 +51,7 @@
   cursor: pointer;
   font-size: 14px;
   white-space: nowrap;
+  margin-left: auto;
 }
 
 .view-all-button5:hover {
@@ -65,6 +68,28 @@
   .data-grid-wrapper {
     width: 100%;
   }
+}
+
+@media (max-width: 500px) {
+  .view-all-button5 {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 22px;
+    white-space: nowrap;
+    margin-left: auto;
+  }
+  .grid2-head {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    gap: 10px;
+  }
+  .grid2-head span {
+    font-size: 28px;
+  }
+
 }
 
 

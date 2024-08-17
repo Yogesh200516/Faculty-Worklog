@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { useNavigate } from 'react-router-dom'; // Use useNavigate instead of useHistory
+import { useNavigate } from 'react-router-dom';
 import './Leaderboard.css';
 
 // Custom hook for window size
@@ -29,27 +29,38 @@ function useWindowSize() {
 
 const Leaderboard = () => {
   const { width } = useWindowSize();
-  const navigate = useNavigate(); // Use useNavigate instead of useHistory
+  const navigate = useNavigate();
+  const [rows, setRows] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/api/negativedata'); // Replace with your API endpoint
+        if (response.ok) {
+          const data = await response.json();
+          setRows(data.map((item, index) => ({
+            ...item,
+            id: item.id, // Ensure each row has a unique `id`
+            index: index + 1 // Add index for serial number
+          })));
+        } else {
+          console.error('Failed to fetch data');
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    fetchData();
+  }, []);
 
   const getColumnWidth = () => {
-    if (width < 1024) {
-      return { id: 50, facultyName: 190, department: 190, frsScore: 120 };
-    } else if (width < 900) {
-      return { id: 100, facultyName: 300, department: 300, frsScore: 150 };
-    } else if (width < 800) {
-      return { id: 100, facultyName: 250, department: 250, frsScore: 120 };
-    } else if (width < 700) {
-      return { id: 90, facultyName: 220, department: 220, frsScore: 110 };
-    } else if (width < 600) {
-      return { id: 80, facultyName: 200, department: 200, frsScore: 80 };
-    } else if (width < 500) {
-      return { id: 60, facultyName: 180, department: 180, frsScore: 70 };
-    } else if (width < 450) {
-      return { id: 50, facultyName: 150, department: 150, frsScore: 80 };
-    } else if (width < 400) {
-      return { id: 40, facultyName: 140, department: 140, frsScore: 60 };
+    if (width < 450) {
+      return { sNo: 50, id: 150, facultyName: 150, department: 150, designation: 150, totalNegativeUpdates: 100 };
+    } else if (width < 1024) {
+      return { sNo: 70, id: 150, facultyName: 200, department: 200, designation: 180, totalNegativeUpdates: 120 };
     } else {
-      return { id: 70, facultyName: 200, department: 200, frsScore: 120 };
+      return { sNo: 90, id: 150, facultyName: 200, department: 200, designation: 250, totalNegativeUpdates: 150 };
     }
   };
 
@@ -59,12 +70,12 @@ const Leaderboard = () => {
     } else if (width < 1024) {
       return 80;
     } else {
-      return 80;
+      return 60;
     }
   };
 
   const getFontSize = () => {
-    if (width < 450) {
+    if (width < 500) {
       return '20px';
     } else if (width < 1024) {
       return '16px';
@@ -74,12 +85,14 @@ const Leaderboard = () => {
   };
 
   const getHeaderFontSize = () => {
-    if (width >1024) {
-      return '24px';
-    } else if (width <= 1024) {
+    if (width < 1024 && width > 500) {
       return '20px';
-    } else if (width < 450) {
+    } else if (width <= 500 && width > 450) {
       return '30px';
+    } else if (width <= 450 && width > 320) {
+      return '26px';
+    } else {
+      return '24px';
     }
   };
 
@@ -89,48 +102,34 @@ const Leaderboard = () => {
   const columnWidths = getColumnWidth();
 
   const columns = [
-    { field: 'id', headerName: 'ID', width: columnWidths.id, headerClassName: 'custom-header' },
-    { field: 'facultyName', headerName: 'Faculty Name', width: columnWidths.facultyName, headerClassName: 'custom-header' },
-    { field: 'department', headerName: 'Department', width: columnWidths.department, headerClassName: 'custom-header' },
     {
-      field: 'frsScore',
-      headerName: 'FRS Score',
-      type: 'number',
-      width: columnWidths.frsScore,
-      headerAlign: 'center',
-      align: 'center',
+      field: 'sNo',
+      headerName: 'S.No.',
+      width: columnWidths.sNo,
       headerClassName: 'custom-header',
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: (params) => params.row.index, // Use the index for serial number
+    },
+    { field: 'id', headerName: 'ID', width: columnWidths.id, headerClassName: 'custom-header', },
+    { field: 'facultyName', headerName: 'Faculty Name', width: columnWidths.facultyName, headerClassName: 'custom-header', align: 'left', headerAlign: 'left' },
+    { field: 'department', headerName: 'Department', width: columnWidths.department, headerClassName: 'custom-header', align: 'left', headerAlign: 'left' },
+    { field: 'designation', headerName: 'Designation', width: columnWidths.designation, headerClassName: 'custom-header', align: 'left', headerAlign: 'left' },
+    { field: 'totalNegativeUpdates', headerName: 'Negative Updates', width: columnWidths.totalNegativeUpdates, headerClassName: 'custom-header', align: 'center', headerAlign: 'center',
       renderCell: (params) => (
-        <span style={{ 
-          fontWeight: 'bold',
-          color: params.value >= 0 ? 'green' : 'red',
-        }}>
-          {params.value}
-        </span>
+        <span style={{ color: 'red', fontWeight: 'bold', fontSize: '16px' }}>{params.value}</span>
       ),
     },
   ];
 
-  const rows = [
-    { id: 1, facultyName: 'John Doe', department: 'Computer Science', frsScore: 88 },
-    { id: 2, facultyName: 'Jane Smith', department: 'Mathematics', frsScore: 92 },
-    { id: 3, facultyName: 'Alice Johnson', department: 'Physics', frsScore: -5 },
-    { id: 4, facultyName: 'Bob Brown', department: 'Chemistry', frsScore: 90 },
-    { id: 5, facultyName: 'Charlie Green', department: 'Biology', frsScore: 95 },
-    { id: 6, facultyName: 'Diana Prince', department: 'Philosophy', frsScore: -10 },
-    { id: 7, facultyName: 'Edward Cullen', department: 'Literature', frsScore: 87 },
-    { id: 8, facultyName: 'Fiona Black', department: 'Engineering', frsScore: 91 },
-    { id: 9, facultyName: 'George White', department: 'History', frsScore: 84 },
-  ];
-
   const handleViewAllClick = () => {
-    navigate('/faculty-entry'); // Adjust the path to your route
+    navigate('/faculty-details'); // Adjust the path to your route
   };
 
   return (
     <div className="grid-full2">
       <div className="grid2-head">
-        <span>Faculty FRS Score</span>
+        <span>Faculty with Frequent Negative FRS</span>
         <button className="view-all-button5" onClick={handleViewAllClick}>
           View All Faculty
         </button>
@@ -146,16 +145,23 @@ const Leaderboard = () => {
             },
           }}
           pageSizeOptions={[5, 10, 20]}
-          checkboxSelection
           autoHeight
           disableSelectionOnClick
           stickyHeader
           sx={{
             '& .MuiDataGrid-cell': {
               fontSize: fontSize,
+              textAlign: 'center',
             },
             '& .MuiDataGrid-columnHeaders': {
               fontSize: headerFontSize,
+              textAlign: 'center',
+            },
+            '& .MuiDataGrid-cell--textLeft': {
+              textAlign: 'left',
+            },
+            '& .MuiDataGrid-cell--textRight': {
+              textAlign: 'right',
             },
           }}
         />

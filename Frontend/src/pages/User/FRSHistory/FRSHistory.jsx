@@ -205,7 +205,7 @@ const FRSHistory = ({ user }) => {
                 <td className="sno">{serialNumber}</td> {/* Display Serial Number */}
                 <td>{row.date}</td>
                 <td className="vertical-name">{row.verticalName}</td>
-                <td className="reason">{row.reason}</td>
+                <td className="reason">{row.reason_info}</td>
                 <td className={row.frsUpdate >= 0 ? 'positive' : 'negative'}>{row.frsUpdate}</td>
                 <td>
                   <button className="view-button" onClick={() => handleViewClick(row)}>View</button>
@@ -249,7 +249,7 @@ const FRSHistory = ({ user }) => {
           <div className="popup" onClick={(e) => e.stopPropagation()}>
             <div className="popup-header">
               <h2>Update Summary</h2>
-              <button className="close-button" onClick={handleClosePopup}>x</button>
+              {/* <button className="close-button" onClick={handleClosePopup}>x</button> */}
             </div>
             <div className="popup-content">
               <div className="content">
@@ -262,11 +262,11 @@ const FRSHistory = ({ user }) => {
               </div>
               <div className="content">
                 <p><strong>Reason:</strong></p>
-                <p>{selectedRow.reason}</p>
+                <p>{selectedRow.reason_info}</p>
               </div>
               <div className="content">
                 <p><strong>Reason Info:</strong></p>
-                <p>{selectedRow.reason_info}</p>
+                <p>{selectedRow.reason}</p>
               </div>
               <div className="content">
                 <p><strong>FRS Update:</strong></p>

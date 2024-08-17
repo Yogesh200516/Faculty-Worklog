@@ -111,15 +111,18 @@ const verticalHeadMenuItems = [
   { text: 'Dashboard', icon: <DashboardIcon />, link: '/head-dashboard' },
   { text: 'FRS History', icon: <FrsHistoryIcon />, link: '/vertical-history' },
   { text: 'FRS Update', icon: <FrsEntryIcon />, link: '/frs-entry' },
+
 ];
 
 const adminMenuItems = [
   { text: 'Admin', icon: <AdminIcon />, link: '/admin' },
   { text: 'Faculty FRS', icon: <FacultyListIcon />, link: '/faculty-entry' },
+  { text: 'FRS Overview',icon:<FrsHistoryIcon />, link: 'faculty-details'},
 ];
 
 const hrMenuItems =[
-  {text: 'Faculty FRS',icon: <FacultyListIcon /> , link:'/'}
+  {text: 'Faculty FRS',icon: <FacultyListIcon /> , link:'/'},
+  { text: 'FRS Overview',icon:<FrsHistoryIcon />, link: 'faculty-details'},
 ]
 
 export default function Navbar({ jwtToken ,onLogout}) {
@@ -235,6 +238,7 @@ export default function Navbar({ jwtToken ,onLogout}) {
               },
               '& .MuiListItemText-primary': {
                 fontWeight: 'bold',
+                color: theme.palette.mode === 'dark' ? '#90caf9' : '#1e90ff',
               },
             },
           }}

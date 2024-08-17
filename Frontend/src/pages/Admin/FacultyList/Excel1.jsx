@@ -1,3 +1,5 @@
+import { faWeight } from '@fortawesome/free-solid-svg-icons';
+import { fontSize, fontWeight } from '@mui/system';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 
@@ -48,7 +50,7 @@ const addSheetContent = (worksheet, rows, columns, sheetTitle) => {
 
   // Adjust column widths based on content
   worksheet.columns = columns.map(col => ({
-    header: col.headerName,
+    header: 'Faculty FRS Score',
     key: col.field,
     width: col.field === 'reason' ? Math.max(...rows.map(row => row[col.field]?.length || 0), col.width / 10) : col.width / 10, // Adjust width for Reason column based on content
     style: {

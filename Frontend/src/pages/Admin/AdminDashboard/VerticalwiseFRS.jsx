@@ -72,7 +72,7 @@ function VerticalwiseFRS() {
 
   const handleVerticalClick = (name) => {
     console.log(name)
-    navigate(`/head-dashboard/${name}`);
+    navigate(`/vertical-history/${name}`);
   };
 
   if (loading) {

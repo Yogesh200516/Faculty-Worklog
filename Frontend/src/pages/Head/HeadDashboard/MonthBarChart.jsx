@@ -129,16 +129,16 @@ export default function MonthBarChart({ user }) {
       chartWidth = 540;
       chartHeight = 300;
     } else if (width <= 500 && width > 425) {
-      chartWidth = 430;
+      chartWidth = 480;
       chartHeight = 300;
     } else if (width <= 425 && width > 400) {
-      chartWidth = 390;
+      chartWidth = 410;
       chartHeight = 280;
     } else if (width <= 400 && width > 350) {
-      chartWidth = 350;
+      chartWidth = 390;
       chartHeight = 280;
     } else {
-      chartWidth = 330;
+      chartWidth = 320;
       chartHeight = 280;
     }
 
@@ -154,7 +154,7 @@ export default function MonthBarChart({ user }) {
     <div className='bar-chart3'>
       {currentSemester === 'First Semester' && (
         <div style={{ marginBottom: '20px', marginLeft:'530px' }}>
-          <h3>Even Semester</h3>
+          <h3 style={{alignItems: 'center'}}>Even Semester</h3>
           <BarChart
             width={chartWidth}
             height={chartHeight}
@@ -184,8 +184,8 @@ export default function MonthBarChart({ user }) {
       )}
       {currentSemester === 'Second Semester' && (
         <div>
-          <h3 style={{ marginBottom: '20px', marginLeft:'530px' }}>Odd Semester</h3>
-          <BarChart style={{marginLeft: '100px'}}
+          <h3 style={{ marginBottom: '20px', alignItems: 'center', textAlign: 'center' }}>Odd Semester</h3>
+          <BarChart style={{marginLeft: '20px'}}
             width={chartWidth}
             height={chartHeight}
             series={[
